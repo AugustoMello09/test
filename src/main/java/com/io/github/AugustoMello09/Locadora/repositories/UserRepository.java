@@ -3,9 +3,9 @@ package com.io.github.AugustoMello09.Locadora.repositories;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import com.io.github.AugustoMello09.Locadora.entities.Estado;
+import com.io.github.AugustoMello09.Locadora.entities.User;
 
 @Repository
-public interface EstadoRepository extends JpaRepository<Estado, Long>{
+public interface UserRepository extends JpaRepository<User, Long>{
 
 }
