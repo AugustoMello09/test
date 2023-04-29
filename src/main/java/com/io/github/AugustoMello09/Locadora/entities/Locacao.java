@@ -3,6 +3,7 @@ package com.io.github.AugustoMello09.Locadora.entities;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.io.github.AugustoMello09.Locadora.entities.pk.LocacaoPK;
 
 import jakarta.persistence.EmbeddedId;
@@ -16,18 +17,21 @@ public class Locacao implements Serializable {
 	
 	@EmbeddedId
 	private LocacaoPK id = new LocacaoPK();
+	
+	@JsonFormat(pattern = "dd/MM/yyyy")
 	private LocalDateTime dataLocacao;
+	
+	@JsonFormat(pattern = "dd/MM/yyyy")
 	private LocalDateTime dataDevolucao;
 
 	public Locacao() {
 	}
 
 	public Locacao(User user, Filme filme, LocalDateTime dataLocacao, LocalDateTime dataDevolucao) {
-		super();
 		id.setUser(user);
 		id.setFilme(filme);
-		this.dataLocacao = dataLocacao;
-		this.dataDevolucao = dataDevolucao;
+		this.setDataLocacao(LocalDateTime.now());
+		this.dataDevolucao = this.dataLocacao.plusDays(7);
 	}
 
 	public User getUser() {
