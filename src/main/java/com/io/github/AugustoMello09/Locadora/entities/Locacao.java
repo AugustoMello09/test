@@ -2,12 +2,15 @@ package com.io.github.AugustoMello09.Locadora.entities;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.io.github.AugustoMello09.Locadora.entities.pk.LocacaoPK;
 
 import jakarta.persistence.EmbeddedId;
 import jakarta.persistence.Entity;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 
 @Entity
@@ -23,6 +26,9 @@ public class Locacao implements Serializable {
 	
 	@JsonFormat(pattern = "dd/MM/yyyy")
 	private LocalDateTime dataDevolucao;
+	
+	@OneToMany(mappedBy = "locacao")
+	private List<Multa> multas = new ArrayList<>();
 
 	public Locacao() {
 	}
@@ -66,4 +72,14 @@ public class Locacao implements Serializable {
 		this.dataDevolucao = dataDevolucao;
 	}
 
+	public List<Multa> getMultas() {
+		return multas;
+	}
+
+	public void setMultas(List<Multa> multas) {
+		this.multas = multas;
+	}
+	
+	
+	
 }

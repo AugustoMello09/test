@@ -30,3 +30,5 @@ INSERT INTO tb_filme (nome, descricao, diretor, categoria_id, estoque_id) VALUES
 INSERT INTO tb_filme (nome, descricao, diretor, categoria_id, estoque_id) VALUES('Um Lugar Secreto', 'Mussum Ipsum, cacilds vidis litro abertis. Vehicula non. Ut sed ex eros. Vivamus sit amet nibh non tellus tristique interdum.Não sou faixa preta cumpadi, sou preto inteiris, inteiris.Praesent vel viverra nisi. Mauris aliquet nunc non turpis scelerisque, eget.Si num tem leite então bota uma pinga aí cumpadi!', 'Pascual Sisto', 3, 3);
 
 INSERT INTO tb_locacao (user_id, filme_id, data_locacao, data_devolucao)VALUES (1, 1, CURRENT_TIMESTAMP, DATEADD('DAY', 7, CURRENT_TIMESTAMP));
+
+INSERT INTO tb_multa(valor, user_id, filme_id) VALUES(100.00, 1, 1);
