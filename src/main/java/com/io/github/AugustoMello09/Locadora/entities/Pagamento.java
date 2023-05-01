@@ -1,6 +1,8 @@
 package com.io.github.AugustoMello09.Locadora.entities;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 import com.io.github.AugustoMello09.Locadora.entities.enums.EstadoPagamento;
@@ -14,6 +16,7 @@ import jakarta.persistence.InheritanceType;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinColumns;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 
 @Entity
@@ -34,6 +37,9 @@ public abstract class Pagamento implements Serializable {
 		@JoinColumn(name = "filme_id")
 	})
 	private Locacao locacao;
+	
+	@OneToMany(mappedBy = "pagamento")
+	private List<Historico> historicos = new ArrayList<>();
 
 	public Pagamento() {
 	}

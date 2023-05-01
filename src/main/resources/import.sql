@@ -36,3 +36,5 @@ INSERT INTO tb_multa(valor, user_id, filme_id) VALUES(100.00, 1, 1);
 INSERT INTO tb_pagamento (valor, estado, user_id, filme_id) VALUES(100.00, 1, 1, 1);
 
 INSERT INTO tb_pagamento_boleto (id,data_Gerada, data_Vencimento, data_Pagamento) VALUES(1, CURRENT_TIMESTAMP, DATEADD('DAY', 30, CURRENT_TIMESTAMP), CURRENT_TIMESTAMP);
+
+INSERT INTO tb_historico (multa_id, user_id, filme_id, pagamento_id)VALUES(1, 1, 1, 1);
