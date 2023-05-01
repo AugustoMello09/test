@@ -1,18 +1,14 @@
 package com.io.github.AugustoMello09.Locadora.entities.enums;
 
-public enum StatusReserva {
-	
-	ATIVA(0, "Ativa"),
-	AGUARDANDO_RETIRADA(1, "Aguardando retirada"),
-	RETIRADA(2, "Retirada"),
-	CANCELADA(3, "Cancelada"),
-	EXPIRADA(4, "Expirada");
-	
+public enum EstadoPagamento {
+
+	PENDENTE(0, "Pendente"), QUITADO(1, "Quitado"), CANCELADO(2, "Cancelado");
+
 	private Integer cod;
 	private String descricao;
 
 	
-	private StatusReserva(Integer cod, String descricao) {
+	private EstadoPagamento(Integer cod, String descricao) {
 		this.cod = cod;
 		this.descricao = descricao;
 	}
@@ -27,16 +23,17 @@ public enum StatusReserva {
 		return descricao;
 	}
 	
-	public static StatusReserva toEnum(Integer cod) {
+	public static EstadoPagamento toEnum(Integer cod) {
 		if(cod == null) {
 			return null;
 		}
 		
-		for(StatusReserva x : StatusReserva.values()) {
+		for(EstadoPagamento x : EstadoPagamento.values()) {
 			if(cod.equals(x.getCod())) {
 				return x;
 			}
 		}
 		throw new IllegalArgumentException("Cod invalido" + cod);
 	}
+
 }

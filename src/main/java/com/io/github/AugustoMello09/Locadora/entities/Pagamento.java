@@ -3,25 +3,30 @@ package com.io.github.AugustoMello09.Locadora.entities;
 import java.io.Serializable;
 import java.util.Objects;
 
+import com.io.github.AugustoMello09.Locadora.entities.enums.EstadoPagamento;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.Inheritance;
+import jakarta.persistence.InheritanceType;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinColumns;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 
 @Entity
-@Table(name = "tb_multa")
-public class Multa implements Serializable {
+@Table(name ="tb_pagamento")
+@Inheritance(strategy = InheritanceType.JOINED)
+public abstract class Pagamento implements Serializable {
 	private static final long serialVersionUID = 1L;
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
-	
 	private Double valor;
+	private Integer estado;
 	
 	@ManyToOne
 	@JoinColumns({
@@ -29,13 +34,15 @@ public class Multa implements Serializable {
 		@JoinColumn(name = "filme_id")
 	})
 	private Locacao locacao;
-	
-	public Multa() {}
-	
-	public Multa(Long id, Double valor, Locacao locacao) {
+
+	public Pagamento() {
+	}
+
+	public Pagamento(Long id, Double valor, EstadoPagamento estado, Locacao locacao) {
 		super();
 		this.id = id;
 		this.valor = valor;
+		this.estado = (estado == null) ? 0 : estado.getCod();
 		this.locacao = locacao;
 	}
 
@@ -76,8 +83,16 @@ public class Multa implements Serializable {
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		Multa other = (Multa) obj;
+		Pagamento other = (Pagamento) obj;
 		return Objects.equals(id, other.id);
+	}
+
+	public EstadoPagamento getEstado() {
+		return EstadoPagamento.toEnum(this.estado);
+	}
+
+	public void setEstado(EstadoPagamento estado) {
+		this.estado = estado.getCod();
 	}
 
 }

@@ -24,7 +24,7 @@ public class Estoque implements Serializable {
 	private Long id;
 
 	private int qtd;
-	private StatusReserva status;
+	private Integer status;
 
 	@OneToMany(mappedBy = "estoque")
 	private List<Filme> filmes = new ArrayList<>();
@@ -36,7 +36,7 @@ public class Estoque implements Serializable {
 		super();
 		this.id = id;
 		this.qtd = qtd;
-		this.status = status;
+		this.status = (status == null) ? 0 : status.getCod();
 	}
 
 	public List<Filme> getFilmes() {
@@ -64,11 +64,11 @@ public class Estoque implements Serializable {
 	}
 
 	public StatusReserva getStatus() {
-		return status;
+		return StatusReserva.toEnum(this.status);
 	}
 
 	public void setStatus(StatusReserva status) {
-		this.status = status;
+		this.status = status.getCod();
 	}
 
 	@Override
