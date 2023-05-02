@@ -3,6 +3,8 @@ package com.io.github.AugustoMello09.Locadora.entities;
 import java.io.Serializable;
 import java.util.Objects;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -22,6 +24,7 @@ public class Cidade implements Serializable {
 	
 	private String name;
 	
+	@JsonIgnore
 	@ManyToOne
 	@JoinColumn(name = "estado_id")
 	private Estado estado;
