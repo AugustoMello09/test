@@ -1,6 +1,8 @@
 package com.io.github.AugustoMello09.Locadora.entities;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 import jakarta.persistence.Column;
@@ -10,13 +12,14 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "tb_filme")
 public class Filme implements Serializable {
 	private static final long serialVersionUID = 1L;
-	
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
@@ -26,14 +29,20 @@ public class Filme implements Serializable {
 	private String descricao;
 
 	private String diretor;
-	
+
 	@ManyToOne
 	@JoinColumn(name = "estoque_id")
 	private Estoque estoque;
-	
+
 	@ManyToOne
 	@JoinColumn(name = "categoria_id")
 	private Categoria categoria;
+
+	@OneToMany(mappedBy = "filme")
+	private List<Reserva> reservas = new ArrayList<>();
+
+	@OneToMany(mappedBy = "filme")
+	private List<ReservaOnline> reservasOnline = new ArrayList<>();
 
 	public Filme() {
 	}
@@ -46,6 +55,14 @@ public class Filme implements Serializable {
 		this.diretor = diretor;
 		this.estoque = estoque;
 		this.categoria = categoria;
+	}
+
+	public List<ReservaOnline> getReservasOnline() {
+		return reservasOnline;
+	}
+
+	public void setReservasOnline(List<ReservaOnline> reservasOnline) {
+		this.reservasOnline = reservasOnline;
 	}
 
 	public Long getId() {
@@ -94,6 +111,14 @@ public class Filme implements Serializable {
 
 	public void setCategoria(Categoria categoria) {
 		this.categoria = categoria;
+	}
+
+	public List<Reserva> getReservas() {
+		return reservas;
+	}
+
+	public void setReservas(List<Reserva> reservas) {
+		this.reservas = reservas;
 	}
 
 	@Override

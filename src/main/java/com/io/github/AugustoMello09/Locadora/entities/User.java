@@ -32,6 +32,12 @@ public class User implements Serializable {
 	@OneToMany(mappedBy = "user")
 	private List<Endereco> enderecos = new ArrayList<>();
 
+	@OneToMany(mappedBy = "user")
+	private List<Reserva> reservas = new ArrayList<>();
+
+	@OneToMany(mappedBy = "user")
+	private List<ReservaOnline> reservasOnline = new ArrayList<>();
+
 	@ManyToMany
 	@JoinTable(name = "tb_user_role", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "role_id"))
 	private Set<Role> roles = new HashSet<>();
@@ -45,6 +51,14 @@ public class User implements Serializable {
 		this.name = name;
 		this.email = email;
 		this.cpf = cpf;
+	}
+
+	public List<ReservaOnline> getReservasOnline() {
+		return reservasOnline;
+	}
+
+	public void setReservasOnline(List<ReservaOnline> reservasOnline) {
+		this.reservasOnline = reservasOnline;
 	}
 
 	public Long getId() {
@@ -61,6 +75,14 @@ public class User implements Serializable {
 
 	public void setName(String name) {
 		this.name = name;
+	}
+
+	public List<Reserva> getReservas() {
+		return reservas;
+	}
+
+	public void setReservas(List<Reserva> reservas) {
+		this.reservas = reservas;
 	}
 
 	public String getEmail() {
@@ -89,6 +111,10 @@ public class User implements Serializable {
 
 	public Set<Role> getRoles() {
 		return roles;
+	}
+
+	public void setRoles(Set<Role> roles) {
+		this.roles = roles;
 	}
 
 	@Override

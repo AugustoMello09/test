@@ -29,6 +29,12 @@ public class Estoque implements Serializable {
 	@OneToMany(mappedBy = "estoque")
 	private List<Filme> filmes = new ArrayList<>();
 
+	@OneToMany(mappedBy = "estoque")
+	private List<Reserva> reservas = new ArrayList<>();
+
+	@OneToMany(mappedBy = "estoque")
+	private List<ReservaOnline> reservasOnline = new ArrayList<>();
+
 	public Estoque() {
 	}
 
@@ -37,6 +43,14 @@ public class Estoque implements Serializable {
 		this.id = id;
 		this.qtd = qtd;
 		this.status = (status == null) ? 0 : status.getCod();
+	}
+
+	public List<ReservaOnline> getReservasOnline() {
+		return reservasOnline;
+	}
+
+	public void setReservasOnline(List<ReservaOnline> reservasOnline) {
+		this.reservasOnline = reservasOnline;
 	}
 
 	public List<Filme> getFilmes() {
@@ -61,6 +75,14 @@ public class Estoque implements Serializable {
 
 	public void setQtd(int qtd) {
 		this.qtd = qtd;
+	}
+
+	public List<Reserva> getReservas() {
+		return reservas;
+	}
+
+	public void setReservas(List<Reserva> reservas) {
+		this.reservas = reservas;
 	}
 
 	public StatusReserva getStatus() {
