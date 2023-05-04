@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -29,11 +31,13 @@ public class Filme implements Serializable {
 	private String descricao;
 
 	private String diretor;
-
+	
+	@JsonIgnore
 	@ManyToOne
 	@JoinColumn(name = "estoque_id")
 	private Estoque estoque;
-
+	
+	@JsonIgnore
 	@ManyToOne
 	@JoinColumn(name = "categoria_id")
 	private Categoria categoria;
