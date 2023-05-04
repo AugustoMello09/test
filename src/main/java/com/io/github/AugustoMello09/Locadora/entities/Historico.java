@@ -3,6 +3,8 @@ package com.io.github.AugustoMello09.Locadora.entities;
 import java.io.Serializable;
 import java.util.Objects;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -20,7 +22,8 @@ public class Historico implements Serializable {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
-
+	
+	@JsonIgnore
 	@ManyToOne
 	@JoinColumn(name = "multa_id")
 	private Multa multa;
@@ -28,7 +31,8 @@ public class Historico implements Serializable {
 	@ManyToOne
 	@JoinColumns({ @JoinColumn(name = "user_id"), @JoinColumn(name = "filme_id") })
 	private Locacao locacao;
-
+	
+	@JsonIgnore
 	@ManyToOne
 	@JoinColumn(name = "pagamento_id")
 	private Pagamento pagamento;

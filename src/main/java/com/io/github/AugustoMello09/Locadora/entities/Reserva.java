@@ -5,6 +5,7 @@ import java.time.LocalDate;
 import java.util.Objects;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -27,15 +28,18 @@ public class Reserva implements Serializable {
 
 	@JsonFormat(pattern = "dd/MM/yyyy")
 	private LocalDate dataReserva;
-
+	
+	@JsonIgnore
 	@ManyToOne
 	@JoinColumn(name = "user_id")
 	private User user;
-
+	
+	@JsonIgnore
 	@ManyToOne
 	@JoinColumn(name = "filme_id")
 	private Filme filme;
-
+	
+	@JsonIgnore
 	@ManyToOne
 	@JoinColumn(name = "estoque_id")
 	private Estoque estoque;

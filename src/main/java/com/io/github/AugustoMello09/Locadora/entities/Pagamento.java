@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.io.github.AugustoMello09.Locadora.entities.enums.EstadoPagamento;
 
 import jakarta.persistence.Entity;
@@ -31,6 +32,7 @@ public abstract class Pagamento implements Serializable {
 	private Double valor;
 	private Integer estado;
 	
+	@JsonIgnore
 	@ManyToOne
 	@JoinColumns({
 		@JoinColumn(name = "user_id"),
