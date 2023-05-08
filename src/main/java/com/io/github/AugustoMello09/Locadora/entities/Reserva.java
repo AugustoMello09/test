@@ -5,7 +5,6 @@ import java.time.LocalDate;
 import java.util.Objects;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -24,37 +23,29 @@ public class Reserva implements Serializable {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
-	private int qtdRerva;
+	private int qtdReservada;
 
 	@JsonFormat(pattern = "dd/MM/yyyy")
 	private LocalDate dataReserva;
-	
-	@JsonIgnore
+
 	@ManyToOne
-	@JoinColumn(name = "user_id")
+	@JoinColumn(name = "user_id", referencedColumnName = "id")
 	private User user;
-	
-	@JsonIgnore
+
 	@ManyToOne
-	@JoinColumn(name = "filme_id")
-	private Filme filme;
-	
-	@JsonIgnore
-	@ManyToOne
-	@JoinColumn(name = "estoque_id")
+	@JoinColumn(name = "estoque_id", referencedColumnName = "id")
 	private Estoque estoque;
 
 	public Reserva() {
 
 	}
 
-	public Reserva(Long id, int qtdRerva, LocalDate dataReserva, User user, Filme filme, Estoque estoque) {
+	public Reserva(Long id, int qtdReservada, LocalDate dataReserva, User user, Estoque estoque) {
 		super();
 		this.id = id;
-		this.qtdRerva = qtdRerva;
+		this.qtdReservada = qtdReservada;
 		this.dataReserva = dataReserva;
 		this.user = user;
-		this.filme = filme;
 		this.estoque = estoque;
 	}
 
@@ -66,12 +57,12 @@ public class Reserva implements Serializable {
 		this.id = id;
 	}
 
-	public int getQtdRerva() {
-		return qtdRerva;
+	public int getQtdReservada() {
+		return qtdReservada;
 	}
 
-	public void setQtdRerva(int qtdRerva) {
-		this.qtdRerva = qtdRerva;
+	public void setQtdReservada(int qtdReservada) {
+		this.qtdReservada = qtdReservada;
 	}
 
 	public LocalDate getDataReserva() {
@@ -88,14 +79,6 @@ public class Reserva implements Serializable {
 
 	public void setUser(User user) {
 		this.user = user;
-	}
-
-	public Filme getFilme() {
-		return filme;
-	}
-
-	public void setFilme(Filme filme) {
-		this.filme = filme;
 	}
 
 	public Estoque getEstoque() {

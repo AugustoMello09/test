@@ -21,9 +21,9 @@ INSERT INTO tb_categoria (nome_Categoria) VALUES('Ação');
 INSERT INTO tb_categoria (nome_Categoria) VALUES('Aventura');	
 INSERT INTO tb_categoria (nome_Categoria) VALUES('Drama');
 
-INSERT INTO tb_estoque (qtd, status) VALUES(10, 0);
-INSERT INTO tb_estoque (qtd, status) VALUES(10, 0);
-INSERT INTO tb_estoque (qtd, status) VALUES(10, 0);	
+INSERT INTO tb_estoque (qtd, status) VALUES(5, 3);
+INSERT INTO tb_estoque (qtd, status) VALUES(10, 3);
+INSERT INTO tb_estoque (qtd, status) VALUES(10, 3);	
 
 INSERT INTO tb_filme (nome, descricao, diretor, categoria_id, estoque_id) VALUES('Rush - No Limite da Emoção', 'Mussum Ipsum, cacilds vidis litro abertis. Vehicula non. Ut sed ex eros. Vivamus sit amet nibh non tellus tristique interdum.Não sou faixa preta cumpadi, sou preto inteiris, inteiris.Praesent vel viverra nisi. Mauris aliquet nunc non turpis scelerisque, eget.Si num tem leite então bota uma pinga aí cumpadi!', 'Ron Howard', 1, 1);
 INSERT INTO tb_filme (nome, descricao, diretor, categoria_id, estoque_id) VALUES('Interestelar', 'Mussum Ipsum, cacilds vidis litro abertis. Vehicula non. Ut sed ex eros. Vivamus sit amet nibh non tellus tristique interdum.Não sou faixa preta cumpadi, sou preto inteiris, inteiris.Praesent vel viverra nisi. Mauris aliquet nunc non turpis scelerisque, eget.Si num tem leite então bota uma pinga aí cumpadi!', 'Christopher Nolan', 2, 2);

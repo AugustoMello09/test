@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Objects;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.io.github.AugustoMello09.Locadora.entities.pk.LocacaoPK;
 
 import jakarta.persistence.EmbeddedId;
@@ -18,7 +19,8 @@ import jakarta.persistence.Table;
 @Table(name = "tb_locacao")
 public class Locacao implements Serializable {
 	private static final long serialVersionUID = 1L;
-
+	
+	@JsonIgnore
 	@EmbeddedId
 	private LocacaoPK id = new LocacaoPK();
 

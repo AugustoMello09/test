@@ -1,11 +1,7 @@
 package com.io.github.AugustoMello09.Locadora.entities;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Objects;
-
-import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -14,7 +10,6 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 
 @Entity
@@ -31,22 +26,14 @@ public class Filme implements Serializable {
 	private String descricao;
 
 	private String diretor;
-	
-	@JsonIgnore
+
 	@ManyToOne
-	@JoinColumn(name = "estoque_id")
+	@JoinColumn(name = "estoque_id", referencedColumnName = "id")
 	private Estoque estoque;
-	
-	@JsonIgnore
+
 	@ManyToOne
-	@JoinColumn(name = "categoria_id")
+	@JoinColumn(name = "categoria_id", referencedColumnName = "id")
 	private Categoria categoria;
-
-	@OneToMany(mappedBy = "filme")
-	private List<Reserva> reservas = new ArrayList<>();
-
-	@OneToMany(mappedBy = "filme")
-	private List<ReservaOnline> reservasOnline = new ArrayList<>();
 
 	public Filme() {
 	}
@@ -59,14 +46,6 @@ public class Filme implements Serializable {
 		this.diretor = diretor;
 		this.estoque = estoque;
 		this.categoria = categoria;
-	}
-
-	public List<ReservaOnline> getReservasOnline() {
-		return reservasOnline;
-	}
-
-	public void setReservasOnline(List<ReservaOnline> reservasOnline) {
-		this.reservasOnline = reservasOnline;
 	}
 
 	public Long getId() {
@@ -115,14 +94,6 @@ public class Filme implements Serializable {
 
 	public void setCategoria(Categoria categoria) {
 		this.categoria = categoria;
-	}
-
-	public List<Reserva> getReservas() {
-		return reservas;
-	}
-
-	public void setReservas(List<Reserva> reservas) {
-		this.reservas = reservas;
 	}
 
 	@Override
