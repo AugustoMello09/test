@@ -1,5 +1,6 @@
 package com.io.github.AugustoMello09.Locadora.Services;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,7 +34,14 @@ public class FilmeService {
 		Optional<Filme> entity = repository.findById(id);
 		return entity.orElseThrow(() -> new ObjectNotFoundException("Filme não encontrado"));
 	}
-
+	
+	@Transactional(readOnly = true)
+	public List<Filme> findAll(Long idCategoria) {
+	  categoriaService.findById(idCategoria);
+	  return repository.findAllByCategory(idCategoria);
+	}
+	
+	@Transactional
 	public Filme create(Filme obj, Long idCategoria, Long idEstoque) {
 		Categoria categoria = categoriaService.findById(idCategoria);
 		Estoque estoque = estoqueService.findById(idEstoque);
@@ -46,7 +54,8 @@ public class FilmeService {
 		filme.setEstoque(estoque);
 		return repository.save(filme);
 	}
-
+	
+	@Transactional
 	public FilmeDTO update(Long id, FilmeDTO objDto) {
 		Filme entity = findById(id);
 		entity.setNome(objDto.getNome());

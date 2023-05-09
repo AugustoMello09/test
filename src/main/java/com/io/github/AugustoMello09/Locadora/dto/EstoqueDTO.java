@@ -1,8 +1,11 @@
 package com.io.github.AugustoMello09.Locadora.dto;
 
+import java.io.Serializable;
+
 import com.io.github.AugustoMello09.Locadora.entities.Estoque;
 
-public class EstoqueDTO {
+public class EstoqueDTO implements Serializable{
+	private static final long serialVersionUID = 1L;
 
 	private Long id;
 	private int qtd;

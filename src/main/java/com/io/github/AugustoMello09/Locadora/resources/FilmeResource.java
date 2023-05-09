@@ -1,6 +1,8 @@
 package com.io.github.AugustoMello09.Locadora.resources;
 
 import java.net.URI;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -30,6 +32,14 @@ public class FilmeResource {
 	public ResponseEntity<Filme> findById(@PathVariable Long id) {
 		Filme fil = service.findById(id);
 		return ResponseEntity.ok().body(fil);
+	}
+	
+	@GetMapping
+	public ResponseEntity<List<FilmeDTO>> findAll(@RequestParam(value = "categoria", defaultValue = "0") Long idCategoria
+			){
+		List<Filme> list = service.findAll(idCategoria);
+		List<FilmeDTO> listDto = list.stream().map(obj -> new FilmeDTO(obj)).collect(Collectors.toList());
+		return ResponseEntity.ok().body(listDto);
 	}
 	
 	@PostMapping

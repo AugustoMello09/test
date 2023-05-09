@@ -11,13 +11,18 @@ import com.io.github.AugustoMello09.Locadora.Services.exception.DataIntegratyVio
 import com.io.github.AugustoMello09.Locadora.Services.exception.ObjectNotFoundException;
 import com.io.github.AugustoMello09.Locadora.dto.EstoqueDTO;
 import com.io.github.AugustoMello09.Locadora.entities.Estoque;
+import com.io.github.AugustoMello09.Locadora.entities.Filme;
 import com.io.github.AugustoMello09.Locadora.repositories.EstoqueRepository;
+import com.io.github.AugustoMello09.Locadora.repositories.FilmeRepository;
 
 @Service
 public class EstoqueService {
 
 	@Autowired
 	private EstoqueRepository repository;
+
+	@Autowired
+	private FilmeRepository filmeRepository;
 
 	@Transactional(readOnly = true)
 	public Estoque findById(Long id) {
@@ -34,6 +39,11 @@ public class EstoqueService {
 	@Transactional
 	public EstoqueDTO update(Long id, EstoqueDTO objDto) {
 		Estoque est = findById(id);
+		Optional<Filme> optionalFilme = filmeRepository.findByEstoque(est);
+		if (optionalFilme.isPresent()) {
+			throw new DataIntegratyViolationException(
+			"Este estoque está sendo utilizado por um filme e não pode ser atualizado se não for por alguma operação que altere o valor como DEVOLUÇÂO e LOCAÇÃO");
+		}
 		est.setQtd(objDto.getQtd());
 		repository.save(est);
 		return new EstoqueDTO(est);
