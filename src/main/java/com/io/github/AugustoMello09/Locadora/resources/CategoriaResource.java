@@ -16,9 +16,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
-import com.io.github.AugustoMello09.Locadora.Services.CategoriaService;
 import com.io.github.AugustoMello09.Locadora.dto.CategoriaDTO;
-import com.io.github.AugustoMello09.Locadora.entities.Categoria;
+import com.io.github.AugustoMello09.Locadora.service.CategoriaService;
 
 @RestController
 @RequestMapping(value = "/categorias")
@@ -28,28 +27,29 @@ public class CategoriaResource {
 	private CategoriaService service;
 	
 	@GetMapping(value = "/{id}")
-	public ResponseEntity<Categoria> findById(@PathVariable Long id){
-		Categoria entity = service.findById(id);
-		return ResponseEntity.ok().body(entity);
+	public ResponseEntity<CategoriaDTO> findById(@PathVariable Long id){
+		CategoriaDTO cat = service.findById(id);
+		return ResponseEntity.ok().body(cat);
 	}
 	
 	@GetMapping
 	public ResponseEntity<Page<CategoriaDTO>> findAll(Pageable pageable){
-		Page<CategoriaDTO> objDto = service.findAll(pageable);
-		return ResponseEntity.ok().body(objDto);
+		Page<CategoriaDTO> cat = service.findAllPaged(pageable);
+		return ResponseEntity.ok().body(cat);
 	}
 	
 	@PostMapping
-	public ResponseEntity<Categoria> create(@RequestBody Categoria cat){
-		Categoria newObj = service.create(cat);
-		URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(newObj.getId()).toUri();
-		return ResponseEntity.created(uri).body(newObj);
+	public ResponseEntity<CategoriaDTO> create(@RequestBody CategoriaDTO catDto){
+		CategoriaDTO newDto = service.create(catDto);
+		URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
+				.buildAndExpand(newDto.getId()).toUri();
+		return ResponseEntity.created(uri).body(newDto);
 	}
 	
 	@PutMapping(value = "/{id}")
-	public ResponseEntity<CategoriaDTO> update(@PathVariable Long id, @RequestBody CategoriaDTO objDto){
-		var newObj = service.update(id, objDto);
-		return ResponseEntity.ok().body(new CategoriaDTO(newObj));
+	public ResponseEntity<CategoriaDTO> update(@RequestBody CategoriaDTO catDto, @PathVariable Long id){
+		CategoriaDTO obj = service.update(catDto, id);
+		return ResponseEntity.ok().body(obj);
 	}
 	
 	@DeleteMapping(value = "/{id}")

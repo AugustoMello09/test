@@ -14,34 +14,34 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
-import com.io.github.AugustoMello09.Locadora.Services.EstoqueService;
 import com.io.github.AugustoMello09.Locadora.dto.EstoqueDTO;
-import com.io.github.AugustoMello09.Locadora.entities.Estoque;
+import com.io.github.AugustoMello09.Locadora.service.EstoqueService;
 
 @RestController
 @RequestMapping(value = "/estoques")
 public class EstoqueResource {
-
+	
 	@Autowired
 	private EstoqueService service;
-
+	
 	@GetMapping(value = "/{id}")
-	public ResponseEntity<Estoque> findById(@PathVariable Long id) {
-		Estoque entity = service.findById(id);
-		return ResponseEntity.ok().body(entity);
+	public ResponseEntity<EstoqueDTO> findById(@PathVariable Long id){
+		EstoqueDTO est = service.findEstoqueById(id);
+		return ResponseEntity.ok().body(est);
 	}
-
+	
 	@PostMapping
-	public ResponseEntity<Estoque> create(@RequestBody Estoque est) {
-		Estoque newObj = service.create(est);
-		URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(newObj.getId()).toUri();
-		return ResponseEntity.created(uri).body(newObj);
+	public ResponseEntity<EstoqueDTO> create(@RequestBody EstoqueDTO est){
+		EstoqueDTO newDto = service.create(est);
+		URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
+				.buildAndExpand(newDto.getId()).toUri();
+		return ResponseEntity.created(uri).body(newDto);
 	}
-
+	
 	@PutMapping(value = "/{id}")
-	public ResponseEntity<EstoqueDTO> update(@PathVariable Long id, @RequestBody EstoqueDTO objDto) {
-		EstoqueDTO newObj = service.update(id, objDto);
-		return ResponseEntity.ok().body(newObj);
+	public ResponseEntity<EstoqueDTO> update(@RequestBody EstoqueDTO est, @PathVariable Long id){
+		EstoqueDTO obj = service.update(est, id);
+		return ResponseEntity.ok().body(obj);
 	}
 	
 	@DeleteMapping(value = "/{id}")
@@ -49,5 +49,4 @@ public class EstoqueResource {
 		service.delete(id);
 		return ResponseEntity.noContent().build();
 	}
-
 }

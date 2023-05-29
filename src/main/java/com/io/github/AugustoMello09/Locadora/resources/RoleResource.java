@@ -13,8 +13,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
-import com.io.github.AugustoMello09.Locadora.Services.RoleService;
-import com.io.github.AugustoMello09.Locadora.entities.Role;
+import com.io.github.AugustoMello09.Locadora.dto.RoleDTO;
+import com.io.github.AugustoMello09.Locadora.service.RoleService;
 
 @RestController
 @RequestMapping(value = "/roles")
@@ -24,16 +24,17 @@ public class RoleResource {
 	private RoleService service;
 	
 	@GetMapping(value = "/{id}")
-	public ResponseEntity<Role> findById(@PathVariable Long id){
-		Role role = service.findById(id);
-		return ResponseEntity.ok().body(role);
+	public ResponseEntity<RoleDTO> findById(@PathVariable Long id){
+		RoleDTO dto = service.findById(id);
+		return ResponseEntity.ok().body(dto);
 	}
 	
 	@PostMapping
-	public ResponseEntity<Role> create(@RequestBody Role rol){
-		Role newObj = service.create(rol);
-		URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(newObj.getId()).toUri();
-		return ResponseEntity.created(uri).body(newObj);
+	public ResponseEntity<RoleDTO> create(@RequestBody RoleDTO objDto){
+		RoleDTO newDto = service.create(objDto);
+		URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
+				.buildAndExpand(newDto.getId()).toUri();
+		return ResponseEntity.created(uri).body(newDto);
 	}
 	
 	@DeleteMapping(value = "/{id}")

@@ -11,7 +11,6 @@ INSERT INTO tb_user (name, email, cpf) VALUES ('José','email@random','cpfrandom
 INSERT INTO tb_user (name, email, cpf) VALUES ('Augusto','email1@random','cpfrandom2');
 
 INSERT INTO tb_endereco (cidade_id, user_id, logradouro, numero, complemento, bairro, cep) VALUES (1, 1, 'Avenida Matos', '105', 'Sala 800', 'Centro', '38777012');
-INSERT INTO tb_endereco (cidade_id, user_id, logradouro, numero, complemento, bairro, cep) VALUES (2, 2, 'Rua Flores', '360', 'apto 380', 'Jardim', '38222012');
 
 INSERT INTO tb_user_role (user_id, role_id) VALUES (1, 1);
 INSERT INTO tb_user_role (user_id, role_id) VALUES (2, 1);
@@ -21,20 +20,12 @@ INSERT INTO tb_categoria (nome_Categoria) VALUES('Ação');
 INSERT INTO tb_categoria (nome_Categoria) VALUES('Aventura');	
 INSERT INTO tb_categoria (nome_Categoria) VALUES('Drama');
 
-INSERT INTO tb_estoque (qtd, status) VALUES(5, 3);
-INSERT INTO tb_estoque (qtd, status) VALUES(10, 3);
-INSERT INTO tb_estoque (qtd, status) VALUES(10, 3);	
+INSERT INTO tb_estoque (quantidade, status) VALUES(10, 3);
+INSERT INTO tb_estoque (quantidade, status) VALUES(10, 3);
+INSERT INTO tb_estoque (quantidade, status) VALUES(10, 3);	
 
-INSERT INTO tb_filme (nome, descricao, diretor, categoria_id, estoque_id) VALUES('Rush - No Limite da Emoção', 'Mussum Ipsum, cacilds vidis litro abertis. Vehicula non. Ut sed ex eros. Vivamus sit amet nibh non tellus tristique interdum.Não sou faixa preta cumpadi, sou preto inteiris, inteiris.Praesent vel viverra nisi. Mauris aliquet nunc non turpis scelerisque, eget.Si num tem leite então bota uma pinga aí cumpadi!', 'Ron Howard', 1, 1);
-INSERT INTO tb_filme (nome, descricao, diretor, categoria_id, estoque_id) VALUES('Interestelar', 'Mussum Ipsum, cacilds vidis litro abertis. Vehicula non. Ut sed ex eros. Vivamus sit amet nibh non tellus tristique interdum.Não sou faixa preta cumpadi, sou preto inteiris, inteiris.Praesent vel viverra nisi. Mauris aliquet nunc non turpis scelerisque, eget.Si num tem leite então bota uma pinga aí cumpadi!', 'Christopher Nolan', 2, 2);
-INSERT INTO tb_filme (nome, descricao, diretor, categoria_id, estoque_id) VALUES('Um Lugar Secreto', 'Mussum Ipsum, cacilds vidis litro abertis. Vehicula non. Ut sed ex eros. Vivamus sit amet nibh non tellus tristique interdum.Não sou faixa preta cumpadi, sou preto inteiris, inteiris.Praesent vel viverra nisi. Mauris aliquet nunc non turpis scelerisque, eget.Si num tem leite então bota uma pinga aí cumpadi!', 'Pascual Sisto', 3, 3);
+INSERT INTO tb_filme (nome, descricao, diretor, valor_Aluguel,categoria_id, estoque_id) VALUES('Rush - No Limite da Emoção', 'Mussum Ipsum, cacilds  bota uma pinga aí cumpadi!', 'Ron Howard', 50.00, 1, 1);
+INSERT INTO tb_filme (nome, descricao, diretor, valor_Aluguel, categoria_id, estoque_id) VALUES('Interestelar', 'Mussum Ipsu abertis.bota uma pinga aí cumpadi!', 'Christopher Nolan', 50.00, 2, 2);
+INSERT INTO tb_filme (nome, descricao, diretor, valor_Aluguel, categoria_id, estoque_id) VALUES('Um Lugar Secreto', 'Mussum Ipsu abertis.bota uma pinga aí cumpadi!', 'Pascual Sisto', 50.00, 3, 3);
 
-INSERT INTO tb_locacao (user_id, filme_id, data_locacao, data_devolucao)VALUES (1, 1, CURRENT_TIMESTAMP, DATEADD('DAY', 7, CURRENT_TIMESTAMP));
 
-INSERT INTO tb_multa(valor, user_id, filme_id) VALUES(100.00, 1, 1);
-
-INSERT INTO tb_pagamento (valor, estado, user_id, filme_id) VALUES(100.00, 1, 1, 1);
-
-INSERT INTO tb_pagamento_boleto (id,data_Gerada, data_Vencimento, data_Pagamento) VALUES(1, CURRENT_TIMESTAMP, DATEADD('DAY', 30, CURRENT_TIMESTAMP), CURRENT_TIMESTAMP);
-
-INSERT INTO tb_historico (multa_id, user_id, filme_id, pagamento_id)VALUES(1, 1, 1, 1);

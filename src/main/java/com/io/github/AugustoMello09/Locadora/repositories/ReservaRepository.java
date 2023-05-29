@@ -3,9 +3,9 @@ package com.io.github.AugustoMello09.Locadora.repositories;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import com.io.github.AugustoMello09.Locadora.entities.ReservaOnline;
+import com.io.github.AugustoMello09.Locadora.entity.Reserva;
 
 @Repository
-public interface ReservaRepository extends JpaRepository<ReservaOnline, Long> {
+public interface ReservaRepository extends JpaRepository<Reserva, Long> {
 
 }

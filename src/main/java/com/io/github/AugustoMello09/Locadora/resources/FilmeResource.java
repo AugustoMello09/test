@@ -17,21 +17,22 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
-import com.io.github.AugustoMello09.Locadora.Services.FilmeService;
 import com.io.github.AugustoMello09.Locadora.dto.FilmeDTO;
-import com.io.github.AugustoMello09.Locadora.entities.Filme;
+import com.io.github.AugustoMello09.Locadora.dto.FilmeDTOUpdate;
+import com.io.github.AugustoMello09.Locadora.entity.Filme;
+import com.io.github.AugustoMello09.Locadora.service.FilmeService;
 
 @RestController
 @RequestMapping(value = "/filmes")
 public class FilmeResource {
-
+	
 	@Autowired
 	private FilmeService service;
-
+	
 	@GetMapping(value = "/{id}")
-	public ResponseEntity<Filme> findById(@PathVariable Long id) {
-		Filme fil = service.findById(id);
-		return ResponseEntity.ok().body(fil);
+	public ResponseEntity<FilmeDTO> findById(@PathVariable Long id){
+		FilmeDTO obj = service.findById(id);
+		return ResponseEntity.ok().body(obj);
 	}
 	
 	@GetMapping
@@ -43,22 +44,22 @@ public class FilmeResource {
 	}
 	
 	@PostMapping
-	public ResponseEntity<Filme> create(@RequestParam(value = "categoria", defaultValue = "0") Long idCategoria,
-			@RequestParam(value = "estoque", defaultValue = "0") Long idEstoque, @RequestBody Filme obj) {
-		Filme newObj = service.create(obj, idCategoria, idEstoque);
-		URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/filmes/{id}").buildAndExpand(newObj.getId())
-				.toUri();
+	public ResponseEntity<FilmeDTO> create(@RequestParam(value = "categoria", defaultValue = "0") Long idCategoria,
+			@RequestParam(value = "estoque", defaultValue = "0")Long idEstoque,
+			@RequestBody FilmeDTO fil){
+		FilmeDTO newObj = service.create(fil, idCategoria, idEstoque);
+		URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(newObj.getId()).toUri();
 		return ResponseEntity.created(uri).body(newObj);
 	}
 	
 	@PutMapping(value = "/{id}")
-	public ResponseEntity<FilmeDTO> update(@RequestBody FilmeDTO objDto, @PathVariable Long id){
-		FilmeDTO filDto = service.update(id, objDto);
-		return ResponseEntity.ok().body(filDto);
+	public ResponseEntity<FilmeDTO> update(@PathVariable Long id, @RequestBody FilmeDTOUpdate fil){
+		FilmeDTO obj = service.update(fil, id);
+		return ResponseEntity.ok().body(obj);
 	}
 	
 	@DeleteMapping(value = "/{id}")
-	public ResponseEntity<Void> delete (@PathVariable Long id){
+	public ResponseEntity<Void> delete(@PathVariable Long id){
 		service.delete(id);
 		return ResponseEntity.noContent().build();
 	}

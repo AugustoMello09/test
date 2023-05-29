@@ -13,8 +13,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
-import com.io.github.AugustoMello09.Locadora.Services.EstadoService;
-import com.io.github.AugustoMello09.Locadora.entities.Estado;
+import com.io.github.AugustoMello09.Locadora.dto.EstadoDTO;
+import com.io.github.AugustoMello09.Locadora.service.EstadoService;
 
 @RestController
 @RequestMapping(value = "/estados")
@@ -24,20 +24,21 @@ public class EstadoResource {
 	private EstadoService service;
 	
 	@GetMapping(value = "/{id}")
-	public ResponseEntity<Estado> findById(@PathVariable Long id) {
-		Estado entity = service.findById(id);
-		return ResponseEntity.ok().body(entity);
+	public ResponseEntity<EstadoDTO> findById(@PathVariable Long id){
+		EstadoDTO endDto = service.findById(id);
+		return ResponseEntity.ok().body(endDto);
 	}
-
+	
 	@PostMapping
-	public ResponseEntity<Estado> create(@RequestBody Estado est) {
-		Estado newObj = service.create(est);
-		URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(newObj.getId()).toUri();
-		return ResponseEntity.created(uri).body(newObj);
+	public ResponseEntity<EstadoDTO> create(@RequestBody EstadoDTO estDto){
+		EstadoDTO newDto = service.create(estDto);
+		URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
+				.buildAndExpand(newDto.getId()).toUri();
+		return ResponseEntity.created(uri).body(newDto);
 	}
-
+	
 	@DeleteMapping(value = "/{id}")
-	public ResponseEntity<Void> delete(@PathVariable Long id) {
+	public ResponseEntity<Void> delete(@PathVariable Long id){
 		service.delete(id);
 		return ResponseEntity.noContent().build();
 	}

@@ -1,5 +1,6 @@
 package com.io.github.AugustoMello09.Locadora.resources;
 
+
 import java.net.URI;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,46 +17,46 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
-import com.io.github.AugustoMello09.Locadora.Services.UserService;
 import com.io.github.AugustoMello09.Locadora.dto.UserDTO;
-import com.io.github.AugustoMello09.Locadora.entities.User;
+import com.io.github.AugustoMello09.Locadora.dto.UserDTOUpdate;
+import com.io.github.AugustoMello09.Locadora.dto.UserPagedDTO;
+import com.io.github.AugustoMello09.Locadora.service.UserService;
 
 @RestController
 @RequestMapping(value = "/users")
 public class UserResource {
-
+	
 	@Autowired
 	private UserService service;
-
+	
 	@GetMapping(value = "/{id}")
-	public ResponseEntity<User> findById(@PathVariable Long id) {
-		User user = service.findById(id);
-		return ResponseEntity.ok().body(user);
+	public ResponseEntity<UserDTO> findById(@PathVariable Long id){
+		UserDTO objDto = service.findById(id);
+		return ResponseEntity.ok().body(objDto);
 	}
-
+	
 	@GetMapping
-	public ResponseEntity<Page<UserDTO>> findAll(Pageable pageable) {
-		Page<UserDTO> user = service.findAll(pageable);
-		return ResponseEntity.ok().body(user);
+	public ResponseEntity<Page<UserPagedDTO>> findAll(Pageable pageable){
+		Page<UserPagedDTO> obj = service.findAllPaged(pageable);
+		return ResponseEntity.ok().body(obj); 
 	}
-
+	
 	@PostMapping
-	public ResponseEntity<User> create(@RequestBody User obj) {
-		User newObj = service.create(obj);
+	public ResponseEntity<UserDTO> create(@RequestBody UserDTO objDto){
+		UserDTO newObj = service.create(objDto);
 		URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(newObj.getId()).toUri();
 		return ResponseEntity.created(uri).body(newObj);
 	}
-
+	
 	@PutMapping(value = "/{id}")
-	public ResponseEntity<UserDTO> update(@PathVariable Long id, @RequestBody UserDTO objDto) {
-		UserDTO newObj = service.update(id, objDto);
-		return ResponseEntity.ok().body(newObj);
+	public ResponseEntity<UserDTO> update(@PathVariable Long id, @RequestBody UserDTOUpdate objDto){
+		UserDTO	newDto = service.update(id, objDto);
+		return ResponseEntity.ok().body(newDto);
 	}
-
+	
 	@DeleteMapping(value = "/{id}")
-	public ResponseEntity<Void> delete(@PathVariable Long id) {
+	public ResponseEntity<Void> delete(@PathVariable Long id){
 		service.delete(id);
 		return ResponseEntity.noContent().build();
 	}
-
 }
