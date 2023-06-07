@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.io.github.AugustoMello09.Locadora.Services.exception.DataIntegratyViolationException;
 import com.io.github.AugustoMello09.Locadora.Services.exception.ObjectNotFoundException;
 import com.io.github.AugustoMello09.Locadora.dto.ReservaDTO;
 import com.io.github.AugustoMello09.Locadora.entities.enums.StatusReserva;
@@ -36,7 +37,7 @@ public class ReservaService {
 	}
 
 	@Transactional
-	public void cancelarReserva(ReservaDTO reservaDTO, Long id) {
+	public void cancelarReserva(Long id) {
 		Reserva reserva = repository.findById(id)
 				.orElseThrow(() -> new ObjectNotFoundException("Reserva não encontrada"));
 		Estoque estoque = reserva.getEstoque();
@@ -47,15 +48,18 @@ public class ReservaService {
 	@Transactional
 	public ReservaDTO create(Long idUser, Long idEstoque, ReservaDTO objDto) {
 		User user = userRepository.findById(idUser)
-				.orElseThrow(() -> new ObjectNotFoundException("Usuário não encontrada"));
+				.orElseThrow(() -> new ObjectNotFoundException("Usuário não encontrado"));
 		Estoque estoque = estoqueRepository.findById(idEstoque)
-				.orElseThrow(() -> new ObjectNotFoundException("Estoque não encontrada"));
+				.orElseThrow(() -> new ObjectNotFoundException("Estoque não encontrado"));
 		Reserva entity = new Reserva();
 		entity.setId(objDto.getId());
 		entity.setQtdReservada(objDto.getQtdReservada());
 		entity.setDataReserva(objDto.getDataReserva());
 		entity.setStatus(StatusReserva.ATIVA);
 		entity.setUser(user);
+		if (entity.getQtdReservada() > estoque.getQuantidade()) {
+	        throw new DataIntegratyViolationException("Quantidade solicitada maior do que a disponível no estoque");
+	    }
 		entity.setEstoque(estoque);
 		repository.save(entity);
 		return new ReservaDTO(entity);

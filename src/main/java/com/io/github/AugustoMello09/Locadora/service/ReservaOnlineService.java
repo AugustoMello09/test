@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.io.github.AugustoMello09.Locadora.Services.exception.DataIntegratyViolationException;
 import com.io.github.AugustoMello09.Locadora.Services.exception.ObjectNotFoundException;
 import com.io.github.AugustoMello09.Locadora.dto.ReservaOnlineDTO;
 import com.io.github.AugustoMello09.Locadora.entities.enums.StatusReserva;
@@ -36,10 +37,9 @@ public class ReservaOnlineService {
 	}
 
 	@Transactional
-	public void cancelarReserva(ReservaOnlineDTO reservaOnlineDTO, Long id) {
+	public void cancelarReserva(Long id) {
 		ReservaOnline reserva = repository.findById(id)
 				.orElseThrow(() -> new ObjectNotFoundException("ReservaOnline não encontrada"));
-		reserva.setStatus(reservaOnlineDTO.getStatusReserva());
 		Estoque estoque = reserva.getEstoque();
 		estoque.getReservasOnline().remove(reserva);
 		repository.delete(reserva);
@@ -57,6 +57,9 @@ public class ReservaOnlineService {
 		entity.setDataReserva(objDto.getDataReserva());
 		entity.setStatus(StatusReserva.ATIVA);
 		entity.setUser(user);
+	    if (entity.getQtdReservada() > estoque.getQuantidade()) {
+	        throw new DataIntegratyViolationException("Quantidade solicitada maior do que a disponível no estoque");
+	    }
 		entity.setEstoque(estoque);
 		repository.save(entity);
 		return new ReservaOnlineDTO(entity);

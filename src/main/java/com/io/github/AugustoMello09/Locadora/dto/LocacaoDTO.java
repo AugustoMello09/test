@@ -5,21 +5,26 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.validation.constraints.Positive;
+
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.io.github.AugustoMello09.Locadora.entities.enums.FormaPagamento;
 import com.io.github.AugustoMello09.Locadora.entity.Locacao;
 import com.io.github.AugustoMello09.Locadora.entity.Multa;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter
 @Setter
+@AllArgsConstructor
 public class LocacaoDTO implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	private Long id;
-
+	
+	@Positive
 	private int qtd;
 	
 	private FormaPagamento formaPagamento;

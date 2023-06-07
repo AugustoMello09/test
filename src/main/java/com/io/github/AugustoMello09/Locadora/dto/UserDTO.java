@@ -6,20 +6,37 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import com.io.github.AugustoMello09.Locadora.entity.Endereco;
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Size;
+
+import org.hibernate.validator.constraints.br.CPF;
+
 import com.io.github.AugustoMello09.Locadora.entity.User;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter
 @Setter
+@AllArgsConstructor
 public class UserDTO implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	private Long id;
+	
+	@Size(min = 2, max = 50, message = "Deve ter entre 2 a 50 caracteres")
+	@NotBlank(message = "Campo obrigatório")
 	private String name;
+	
+	@Email
+	@Size(min = 2, max = 50, message = "Deve ter entre 2 a 50 caracteres")
+	@NotBlank(message = "Campo obrigatório")
 	private String email;
+	
+	@CPF
+	@NotBlank(message = "Campo obrigatório")
 	private String cpf;
 
 	private List<EnderecoDTO> enderecos = new ArrayList<>();
@@ -35,12 +52,7 @@ public class UserDTO implements Serializable {
 		this.email = entity.getEmail();
 		this.cpf = entity.getCpf();
 		entity.getRoles().forEach(x -> this.roles.add(new RoleDTO(x)));
-		entity.getEnderecos().stream().filter(endereco -> !isEnderecoAlreadyAdded(endereco)).map(EnderecoDTO::new)
-				.forEach(enderecos::add);
-	}
-
-	public boolean isEnderecoAlreadyAdded(Endereco endereco) {
-		return enderecos.stream().anyMatch(enderecoDTO -> enderecoDTO.getId().equals(endereco.getId()));
+		entity.getEnderecos().forEach(x -> this.enderecos.add(new EnderecoDTO(x)));
 	}
 
 }

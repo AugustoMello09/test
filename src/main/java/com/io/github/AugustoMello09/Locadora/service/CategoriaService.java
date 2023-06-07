@@ -52,14 +52,12 @@ public class CategoriaService {
 	}
 
 	public void delete(Long id) {
-		try {
-			repository.deleteById(id);
+		findById(id);
+	    try {
+	    	repository.deleteById(id);
 		} catch (DataIntegrityViolationException e) {
-			throw new DataIntegratyViolationException("Não pode deletar um usuário que possua endereços");
-		} catch (ObjectNotFoundException e) {
-			throw new ObjectNotFoundException("Categoria Não encontrada");
-		}
-
+			throw new DataIntegratyViolationException("Categoria não pode ser excluida porque está associado com filmes");
+		}	
 	}
 
 }

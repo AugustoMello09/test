@@ -7,16 +7,19 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import com.io.github.AugustoMello09.Locadora.entities.enums.StatusReserva;
 import com.io.github.AugustoMello09.Locadora.entity.Reserva;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 
+
 @Getter
 @Setter
+@AllArgsConstructor
 public class ReservaDTO implements Serializable {
 	private static final long serialVersionUID = 1L;
 	
 	private Long id;
-
+	
 	private int qtdReservada;
 	
 	private StatusReserva statusReserva;

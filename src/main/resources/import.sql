@@ -20,12 +20,8 @@ INSERT INTO tb_categoria (nome_Categoria) VALUES('Ação');
 INSERT INTO tb_categoria (nome_Categoria) VALUES('Aventura');	
 INSERT INTO tb_categoria (nome_Categoria) VALUES('Drama');
 
-INSERT INTO tb_estoque (quantidade, status) VALUES(10, 3);
-INSERT INTO tb_estoque (quantidade, status) VALUES(10, 3);
-INSERT INTO tb_estoque (quantidade, status) VALUES(10, 3);	
 
-INSERT INTO tb_filme (nome, descricao, diretor, valor_Aluguel,categoria_id, estoque_id) VALUES('Rush - No Limite da Emoção', 'Mussum Ipsum, cacilds  bota uma pinga aí cumpadi!', 'Ron Howard', 50.00, 1, 1);
-INSERT INTO tb_filme (nome, descricao, diretor, valor_Aluguel, categoria_id, estoque_id) VALUES('Interestelar', 'Mussum Ipsu abertis.bota uma pinga aí cumpadi!', 'Christopher Nolan', 50.00, 2, 2);
-INSERT INTO tb_filme (nome, descricao, diretor, valor_Aluguel, categoria_id, estoque_id) VALUES('Um Lugar Secreto', 'Mussum Ipsu abertis.bota uma pinga aí cumpadi!', 'Pascual Sisto', 50.00, 3, 3);
+	
+
 
 

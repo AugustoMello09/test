@@ -3,6 +3,7 @@ package com.io.github.AugustoMello09.Locadora.service;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -19,33 +20,35 @@ public class CidadeService {
 
 	@Autowired
 	private CidadeRepository repository;
-	
+
 	@Autowired
 	private EstadoRepository estadoRepository;
 
 	@Transactional
 	public CidadeDTO findById(Long id) {
 		Optional<Cidade> obj = repository.findById(id);
-		Cidade entity = obj.orElseThrow(()-> new ObjectNotFoundException("Cidade Não encontrada"));
+		Cidade entity = obj.orElseThrow(() -> new ObjectNotFoundException("Cidade Não encontrada"));
 		return new CidadeDTO(entity);
 	}
 
 	@Transactional
 	public CidadeDTO create(CidadeDTO cidDto, Long idEstado) {
 		Cidade cidade = new Cidade();
-	    cidade.setId(cidDto.getId());
+		cidade.setId(cidDto.getId());
 		cidade.setName(cidDto.getName());
-	    Estado estado = estadoRepository.findById(idEstado).orElse(null);
-	    cidade.setEstado(estado);
-	    repository.save(cidade);
-	    return new CidadeDTO(cidade);
+		Estado estado = estadoRepository.findById(idEstado)
+				.orElseThrow(() -> new ObjectNotFoundException("Estado Não encontrado"));
+		cidade.setEstado(estado);
+		repository.save(cidade);
+		return new CidadeDTO(cidade);
 	}
 
 	public void delete(Long id) {
+		findById(id);
 		try {
 			repository.deleteById(id);
-		} catch (DataIntegratyViolationException e) {
+		} catch (DataIntegrityViolationException e) {
 			throw new DataIntegratyViolationException("Não pode deletar cidades associadas a estado");
-		}	
+		}
 	}
 }

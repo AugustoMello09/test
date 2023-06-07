@@ -3,6 +3,7 @@ package com.io.github.AugustoMello09.Locadora.service;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -27,16 +28,19 @@ public class EstadoService {
 
 	@Transactional
 	public EstadoDTO create(EstadoDTO estDto) {
-		Estado entity = new Estado(estDto.getId(), estDto.getName());
+		Estado entity = new Estado();
+		entity.setId(estDto.getId());
+		entity.setName(estDto.getName());
 		repository.save(entity);
 		return new EstadoDTO(entity);
 	}
 
 	public void delete(Long id) {
+		findById(id);
 		try {
 			repository.deleteById(id);
-		} catch (DataIntegratyViolationException e) {
-			throw new DataIntegratyViolationException("Não pode deletar estados");
+		} catch (DataIntegrityViolationException e) {
+			throw new DataIntegratyViolationException("Não pode deletar estados associados a cidades");
 		}
 	}
 

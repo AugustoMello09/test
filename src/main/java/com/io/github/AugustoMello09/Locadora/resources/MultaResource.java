@@ -1,5 +1,7 @@
 package com.io.github.AugustoMello09.Locadora.resources;
 
+import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -40,7 +42,7 @@ public class MultaResource {
 	@PostMapping("/PagamentoComCartao")
 	public ResponseEntity<Void> pagarMultaComCartão(
 			@RequestParam(value = "multa", defaultValue = "0")Long multaId, 
-			@RequestBody PagamentoComCartaoDTO pagamentoDTO) {
+		@Valid	@RequestBody PagamentoComCartaoDTO pagamentoDTO) {
 		service.pagarMultaCartao(multaId, pagamentoDTO);
 		return ResponseEntity.ok().build();
 	}

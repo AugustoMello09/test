@@ -2,6 +2,8 @@ package com.io.github.AugustoMello09.Locadora.resources;
 
 import java.net.URI;
 
+import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -39,7 +41,7 @@ public class CategoriaResource {
 	}
 	
 	@PostMapping
-	public ResponseEntity<CategoriaDTO> create(@RequestBody CategoriaDTO catDto){
+	public ResponseEntity<CategoriaDTO> create(@Valid @RequestBody CategoriaDTO catDto){
 		CategoriaDTO newDto = service.create(catDto);
 		URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
 				.buildAndExpand(newDto.getId()).toUri();
@@ -47,7 +49,7 @@ public class CategoriaResource {
 	}
 	
 	@PutMapping(value = "/{id}")
-	public ResponseEntity<CategoriaDTO> update(@RequestBody CategoriaDTO catDto, @PathVariable Long id){
+	public ResponseEntity<CategoriaDTO> update(@Valid @RequestBody CategoriaDTO catDto, @PathVariable Long id){
 		CategoriaDTO obj = service.update(catDto, id);
 		return ResponseEntity.ok().body(obj);
 	}

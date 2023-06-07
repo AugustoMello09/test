@@ -31,15 +31,15 @@ public class ReservaResource {
 
 	@PostMapping
 	public ResponseEntity<ReservaDTO> create(@RequestParam(value = "user", defaultValue = "0") Long idUser,
-			@RequestParam(value = "estoque", defaultValue = "0") Long idEstoque, @RequestBody ReservaDTO objDto) {
+			@RequestParam(value = "estoque", defaultValue = "0") Long idEstoque,@RequestBody ReservaDTO objDto) {
 		ReservaDTO newObj = service.create(idUser, idEstoque, objDto);
 		URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(newObj.getId()).toUri();
 		return ResponseEntity.created(uri).body(newObj);
 	}
 
 	@PostMapping(value = "/cancelar/{id}")
-	public ResponseEntity<Void> cancelar(@RequestBody ReservaDTO reservaDTO, @PathVariable Long id) {
-		service.cancelarReserva(reservaDTO, id);
+	public ResponseEntity<Void> cancelar(@PathVariable Long id) {
+		service.cancelarReserva(id);
 		return ResponseEntity.ok().build();
 	}
 

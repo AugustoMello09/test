@@ -2,6 +2,8 @@ package com.io.github.AugustoMello09.Locadora.resources;
 
 import java.net.URI;
 
+import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -32,7 +34,7 @@ public class CidadeResource {
 	
 	@PostMapping
 	public ResponseEntity<CidadeDTO> create(@RequestParam(value = "estado", defaultValue = "0") 
-	Long idEstado,@RequestBody CidadeDTO cidDto){
+	Long idEstado,@Valid @RequestBody CidadeDTO cidDto){
 		CidadeDTO newDto = service.create(cidDto, idEstado);
 		URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
 				.buildAndExpand(newDto.getId()).toUri();

@@ -17,7 +17,7 @@ public class PagamentoComPixDTO extends PagamentoDTO implements Serializable {
 	@JsonFormat(pattern = "dd/MM/yyyy")
 	private LocalDateTime dataPagamento;
 	
-	PagamentoComPixDTO(){}
+	public PagamentoComPixDTO(){}
 	
 	PagamentoComPixDTO(PagamentoComPix entity){
 		this.dataPagamento = entity.getDataPagamento();

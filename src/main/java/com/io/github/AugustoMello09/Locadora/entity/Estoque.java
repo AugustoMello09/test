@@ -5,14 +5,15 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
+
 import com.io.github.AugustoMello09.Locadora.entities.enums.StatusEstoque;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "tb_estoque")
@@ -35,10 +36,9 @@ public class Estoque implements Serializable {
 
 	@OneToMany(mappedBy = "estoque")
 	private List<ReservaOnline> reservasOnline = new ArrayList<>();
-
-	public Estoque() {
-	}
-
+	
+	public Estoque() {}
+	
 	public Estoque(Long id, int quantidade, StatusEstoque status) {
 		super();
 		this.id = id;
@@ -66,20 +66,28 @@ public class Estoque implements Serializable {
 		this.status = status.getCod();
 	}
 
+	public int getQuantidadeFilmesReservados() {
+		int quantidade = 0;
+		for (Reserva reserva : reservas) {
+			quantidade += reserva.getQtdReservada();
+		}
+		return quantidade;
+	}
+
+	public int getQuantidadeFilmesReservadosOnline() {
+		int quantidade = 0;
+		for (ReservaOnline reserva : reservasOnline) {
+			quantidade += reserva.getQtdReservada();
+		}
+		return quantidade;
+	}
+
 	public int getQuantidadeFilmesDisponiveis() {
 		int quantidadeTotal = this.getQuantidade();
 		int quantidadeReservada = this.getQuantidadeFilmesReservados();
 		int quantidadeReservadaOnline = this.getQuantidadeFilmesReservadosOnline();
 		int quantidadeDisponivel = quantidadeTotal - quantidadeReservada - quantidadeReservadaOnline;
 		return quantidadeDisponivel;
-	}
-
-	public int getQuantidadeFilmesReservados() {
-		return (int) reservas.stream().map(Reserva::getId).distinct().count();
-	}
-
-	public int getQuantidadeFilmesReservadosOnline() {
-		return (int) reservasOnline.stream().map(ReservaOnline::getId).distinct().count();
 	}
 
 	public List<Reserva> getReservas() {

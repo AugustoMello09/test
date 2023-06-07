@@ -3,6 +3,8 @@ package com.io.github.AugustoMello09.Locadora.resources;
 
 import java.net.URI;
 
+import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -42,15 +44,15 @@ public class UserResource {
 	}
 	
 	@PostMapping
-	public ResponseEntity<UserDTO> create(@RequestBody UserDTO objDto){
+	public ResponseEntity<UserDTO> create(@Valid @RequestBody UserDTO objDto){
 		UserDTO newObj = service.create(objDto);
 		URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(newObj.getId()).toUri();
 		return ResponseEntity.created(uri).body(newObj);
 	}
 	
 	@PutMapping(value = "/{id}")
-	public ResponseEntity<UserDTO> update(@PathVariable Long id, @RequestBody UserDTOUpdate objDto){
-		UserDTO	newDto = service.update(id, objDto);
+	public ResponseEntity<UserDTO> update(@PathVariable Long id,@Valid @RequestBody UserDTOUpdate objDto){
+		UserDTO	newDto = service.update(objDto, id);
 		return ResponseEntity.ok().body(newDto);
 	}
 	

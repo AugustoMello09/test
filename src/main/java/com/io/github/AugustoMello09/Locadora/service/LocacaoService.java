@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.io.github.AugustoMello09.Locadora.Services.exception.DataIntegratyViolationException;
 import com.io.github.AugustoMello09.Locadora.Services.exception.ObjectNotFoundException;
 import com.io.github.AugustoMello09.Locadora.dto.LocacaoDTO;
 import com.io.github.AugustoMello09.Locadora.entity.Estoque;
@@ -43,23 +44,27 @@ public class LocacaoService {
 	
 	@Transactional
 	public LocacaoDTO create(Long idUser, Long idFilme, LocacaoDTO obj) {
-		User user = userRepository.findById(idUser).orElseThrow(
-				()-> new ObjectNotFoundException("Usuário não encontrado"));
-		Filme filme = filmeRepository.findById(idFilme).orElseThrow(
-				()-> new ObjectNotFoundException("Filme não encontrado"));
-		Locacao locacao = new Locacao();
-		locacao.setUser(user);
-		locacao.setFilme(filme);
-		locacao.setQtd(obj.getQtd());
-		locacao.setformaPamento(obj.getFormaPagamento());
-		locacao.setDataLocacao(LocalDateTime.now());
-		locacao.setDataDevolucao(null);
-		locacao.setDataMaxDevolucao(locacao.getDataLocacao().plusDays(7));
-		Estoque estoque = filme.getEstoque();
-		estoque.setQtd(estoque.getQuantidade() - locacao.getQtd());
-		filmeRepository.save(filme);
-		repository.save(locacao);
-		return new LocacaoDTO(locacao);
+		  User user = userRepository.findById(idUser).orElseThrow(
+		            () -> new ObjectNotFoundException("Usuário não encontrado"));
+		    Filme filme = filmeRepository.findById(idFilme).orElseThrow(
+		            () -> new ObjectNotFoundException("Filme não encontrado"));
+		    Locacao locacao = new Locacao();
+		    locacao.setId(obj.getId());
+		    locacao.setUser(user);
+		    locacao.setFilme(filme);
+		    locacao.setQtd(obj.getQtd());
+		    locacao.setformaPamento(obj.getFormaPagamento());
+		    locacao.setDataLocacao(LocalDateTime.now());
+		    locacao.setDataDevolucao(null);
+		    locacao.setDataMaxDevolucao(locacao.getDataLocacao().plusDays(7));
+		    Estoque estoque = filme.getEstoque();
+		    if (locacao.getQtd() > estoque.getQuantidade()) {
+		        throw new DataIntegratyViolationException("Quantidade solicitada maior do que a disponível no estoque");
+		    }
+		    estoque.setQuantidade(estoque.getQuantidade() - locacao.getQtd());
+		    filmeRepository.save(filme);
+		    repository.save(locacao);
+		    return new LocacaoDTO(locacao);
 	}
 	
 	@Transactional

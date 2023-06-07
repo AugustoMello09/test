@@ -7,6 +7,7 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.io.github.AugustoMello09.Locadora.Services.exception.DataIntegratyViolationException;
 import com.io.github.AugustoMello09.Locadora.Services.exception.ObjectNotFoundException;
 import com.io.github.AugustoMello09.Locadora.dto.RoleDTO;
 import com.io.github.AugustoMello09.Locadora.entity.Role;
@@ -21,22 +22,25 @@ public class RoleService {
 	@Transactional
 	public RoleDTO findById(Long id) {
 		Optional<Role> obj = repository.findById(id);
-		Role entity = obj.orElseThrow(()-> new ObjectNotFoundException("Role não encontrada"));
+		Role entity = obj.orElseThrow(() -> new ObjectNotFoundException("Role não encontrada"));
 		return new RoleDTO(entity);
 	}
 
 	@Transactional
 	public RoleDTO create(RoleDTO objDto) {
-		Role entity = new Role(objDto.getId(), objDto.getAuthority());
+		Role entity = new Role();
+		entity.setId(objDto.getId());
+		entity.setAuthority(objDto.getAuthority());
 		repository.save(entity);
 		return new RoleDTO(entity);
 	}
 
 	public void delete(Long id) {
+		findById(id);
 		try {
 			repository.deleteById(id);
 		} catch (DataIntegrityViolationException e) {
-			throw new DataIntegrityViolationException("Integrity violation");
+			throw new DataIntegratyViolationException("Não pode deletar Cargos que estão em uso");
 		}
 
 	}

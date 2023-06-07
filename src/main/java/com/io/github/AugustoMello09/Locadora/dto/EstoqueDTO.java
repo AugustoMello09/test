@@ -6,14 +6,14 @@ import java.util.List;
 
 import com.io.github.AugustoMello09.Locadora.entities.enums.StatusEstoque;
 import com.io.github.AugustoMello09.Locadora.entity.Estoque;
-import com.io.github.AugustoMello09.Locadora.entity.Reserva;
-import com.io.github.AugustoMello09.Locadora.entity.ReservaOnline;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter
 @Setter
+@AllArgsConstructor
 public class EstoqueDTO implements Serializable {
 	private static final long serialVersionUID = 1L;
 
@@ -38,18 +38,8 @@ public class EstoqueDTO implements Serializable {
 		this.quantidadeFilmesReservados = entity.getQuantidadeFilmesReservados();
 		this.quantidadeFilmesReservadosOnline = entity.getQuantidadeFilmesReservadosOnline();
 		this.quantidadeFilmesDisponiveis = entity.getQuantidadeFilmesDisponiveis();
-		entity.getReservas().stream().filter(reserva -> !isReservaAlreadyAdded(reserva)).map(ReservaDTO::new)
-				.forEach(reservas::add);
-		entity.getReservasOnline().stream().filter(reservaOnline -> !isReservaOnlineAlreadyAdded(reservaOnline))
-				.map(ReservaOnlineDTO::new).forEach(reservasOnline::add);
+		entity.getReservas().forEach(x -> this.reservas.add(new ReservaDTO(x)));
+		entity.getReservasOnline().forEach(x -> this.reservasOnline.add(new ReservaOnlineDTO(x)));
 	}
 
-	private boolean isReservaAlreadyAdded(Reserva reserva) {
-		return reservas.stream().anyMatch(reservaDTO -> reservaDTO.getId().equals(reserva.getId()));
-	}
-
-	private boolean isReservaOnlineAlreadyAdded(ReservaOnline reservaOnline) {
-		return reservasOnline.stream()
-				.anyMatch(reservaOnlineDTO -> reservaOnlineDTO.getId().equals(reservaOnline.getId()));
-	}
 }

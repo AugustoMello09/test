@@ -1,17 +1,17 @@
 package com.io.github.AugustoMello09.Locadora.entity;
 
-import com.io.github.AugustoMello09.Locadora.entities.enums.FormaPagamento;
+import javax.persistence.Entity;
+import javax.persistence.Table;
+import javax.validation.constraints.Positive;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Table;
+import com.io.github.AugustoMello09.Locadora.entities.enums.FormaPagamento;
 
 @Entity
 @Table(name = "tb_pagamento_cartao")
 public class PagamentoComCartao extends Pagamento {
 	private static final long serialVersionUID = 1L;
 
-	@Column(nullable = false)
+	@Positive
 	private int numeroParcelas;
 
 	public PagamentoComCartao() {

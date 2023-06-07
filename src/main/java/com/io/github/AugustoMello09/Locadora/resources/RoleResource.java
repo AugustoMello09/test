@@ -2,6 +2,8 @@ package com.io.github.AugustoMello09.Locadora.resources;
 
 import java.net.URI;
 
+import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -30,7 +32,7 @@ public class RoleResource {
 	}
 	
 	@PostMapping
-	public ResponseEntity<RoleDTO> create(@RequestBody RoleDTO objDto){
+	public ResponseEntity<RoleDTO> create(@Valid @RequestBody RoleDTO objDto){
 		RoleDTO newDto = service.create(objDto);
 		URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
 				.buildAndExpand(newDto.getId()).toUri();

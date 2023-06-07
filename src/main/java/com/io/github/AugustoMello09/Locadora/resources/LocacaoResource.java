@@ -2,6 +2,8 @@ package com.io.github.AugustoMello09.Locadora.resources;
 
 import java.net.URI;
 
+import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -31,7 +33,7 @@ public class LocacaoResource {
 	
 	@PostMapping
     public ResponseEntity<LocacaoDTO> create(@RequestParam(value = "user", defaultValue = "0") Long idUser,
-            @RequestParam(value = "filme", defaultValue = "0")Long idFilme, @RequestBody LocacaoDTO obj){
+            @RequestParam(value = "filme", defaultValue = "0")Long idFilme,@Valid @RequestBody LocacaoDTO obj){
         LocacaoDTO newObj = service.create(idUser, idFilme, obj);
         URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/locacao/{id}").buildAndExpand(newObj.getId())
                 .toUri();
@@ -40,7 +42,7 @@ public class LocacaoResource {
 	
 	@PostMapping(value = "devolver/{idLocacao}")
 	public ResponseEntity<Void> devolver(@PathVariable Long idLocacao,
-			@RequestBody LocacaoDTO dto){
+			@Valid @RequestBody LocacaoDTO dto){
 		service.devolver(idLocacao, dto);
 		return ResponseEntity.ok().build();
 	}
