@@ -8,12 +8,14 @@ import javax.validation.constraints.Size;
 
 import com.io.github.AugustoMello09.Locadora.entity.User;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Getter
 @Setter
+@AllArgsConstructor
 @NoArgsConstructor
 public class UserPagedDTO implements Serializable {
 	private static final long serialVersionUID = 1L;
