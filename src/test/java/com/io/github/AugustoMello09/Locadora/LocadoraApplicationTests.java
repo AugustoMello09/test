@@ -7,7 +7,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 class LocadoraApplicationTests {
 
 	@Test
-	void contextLoads() {
+	void main() {
+		LocadoraApplication.main(new String[] {});
 	}
 
 }
