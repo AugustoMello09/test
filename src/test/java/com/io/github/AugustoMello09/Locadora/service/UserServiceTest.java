@@ -28,12 +28,14 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import com.io.github.AugustoMello09.Locadora.Services.exception.DataIntegratyViolationException;
 import com.io.github.AugustoMello09.Locadora.Services.exception.ObjectNotFoundException;
 import com.io.github.AugustoMello09.Locadora.dto.RoleDTO;
 import com.io.github.AugustoMello09.Locadora.dto.UserDTO;
 import com.io.github.AugustoMello09.Locadora.dto.UserDTOUpdate;
+import com.io.github.AugustoMello09.Locadora.dto.UserInsertDTO;
 import com.io.github.AugustoMello09.Locadora.dto.UserPagedDTO;
 import com.io.github.AugustoMello09.Locadora.entity.Role;
 import com.io.github.AugustoMello09.Locadora.entity.User;
@@ -70,6 +72,11 @@ public class UserServiceTest {
 	private Role role;
 	private RoleDTO roleDTO;
 
+	private UserInsertDTO userInsertDTO;
+
+	@Mock
+	private BCryptPasswordEncoder passwordEncoder;
+
 	@BeforeEach
 	void setUp() {
 		MockitoAnnotations.openMocks(this);
@@ -97,8 +104,8 @@ public class UserServiceTest {
 
 	@Test
 	void whenFindAllPagedThenReturnPageOfUserDTO() {
-		List<User> users = Arrays.asList(new User(ID, NOME, EMAIL, CPF),
-				new User(2L, "a", "email@aaa.com", "123.456.456.48"));
+		List<User> users = Arrays.asList(new User(ID, NOME, EMAIL, CPF, "123"),
+				new User(2L, "a", "email@aaa.com", "123.456.456.48", "123"));
 		Page<User> usersPage = new PageImpl<>(users);
 		when(repository.findAll(any(Pageable.class))).thenReturn(usersPage);
 		Page<UserPagedDTO> result = service.findAllPaged(PageRequest.of(0, 5));
@@ -123,7 +130,7 @@ public class UserServiceTest {
 	public void testCreate() {
 		when(repository.save(any(User.class))).thenReturn(user);
 		when(roleRepository.findById(anyLong())).thenReturn(optionalRole);
-		UserDTO response = service.create(userDTO);
+		UserDTO response = service.create(userInsertDTO);
 		assertNotNull(response);
 		assertEquals(ID, response.getId());
 		assertEquals(NOME, response.getName());
@@ -131,15 +138,38 @@ public class UserServiceTest {
 		assertEquals(CPF, response.getCpf());
 		assertNotNull(response.getRoles());
 		verify(repository, times(1)).save(any(User.class));
-		verify(roleRepository, times(1)).findById(ID);
+	}
 
+	@Test
+	public void testCopyToEntity() {
+		UserDTO userDto = new UserDTO();
+		userDto.setName("John Doe");
+		userDto.setCpf("123456789");
+		userDto.setEmail("john.doe@example.com");
+
+		RoleDTO roleDto = new RoleDTO();
+		roleDto.setId(1L);
+		userDto.getRoles().add(roleDto);
+
+		User user = new User();
+
+		when(roleRepository.findById(roleDto.getId())).thenReturn(Optional.of(new Role()));
+
+		service.copyToEntity(userDto, user);
+
+		verify(roleRepository, times(1)).findById(roleDto.getId());
+
+		assertEquals(userDto.getName(), user.getName());
+		assertEquals(userDto.getCpf(), user.getCpf());
+		assertEquals(userDto.getEmail(), user.getEmail());
+		assertEquals(1, user.getRoles().size());
 	}
 
 	@Test
 	void whenUpdateUserThenReturnUserDTO() {
 		Long id = 1L;
 		UserDTOUpdate objDto = new UserDTOUpdate("Novo Nome", "novoemail@gmail.com");
-		User user = new User(id, "Nome Antigo", "emailantigo@gmail.com", "123456789");
+		User user = new User(id, "Nome Antigo", "emailantigo@gmail.com", "123456789", "123");
 		when(repository.findById(id)).thenReturn(Optional.of(user));
 		when(repository.save(any(User.class))).thenReturn(user);
 		UserDTO result = service.update(objDto, id);
@@ -169,15 +199,16 @@ public class UserServiceTest {
 	}
 
 	private void startUser() {
-
+		userInsertDTO = new UserInsertDTO(passwordEncoder.encode("123"));
 		roleDTO = new RoleDTO(ID, AUT);
 		userDTO = new UserDTO(ID, NOME, EMAIL, CPF, null, new HashSet<>());
 		userDTO.getRoles().add(roleDTO);
 		role = new Role(ID, AUT);
-		user = new User(ID, NOME, EMAIL, CPF);
-		user.setRoles(new HashSet<>()); // Initialize the roles set in the User object
-		user.getRoles().add(role); // Add the role to the user's roles set
+		user = new User(ID, NOME, EMAIL, CPF, "132");
+		user.setRoles(new HashSet<>());
+		user.getRoles().add(role);
 		optionalUser = Optional.of(user);
 		optionalRole = Optional.of(role);
 	}
+
 }

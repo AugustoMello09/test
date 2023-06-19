@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -14,6 +15,7 @@ import com.io.github.AugustoMello09.Locadora.Services.exception.ObjectNotFoundEx
 import com.io.github.AugustoMello09.Locadora.dto.RoleDTO;
 import com.io.github.AugustoMello09.Locadora.dto.UserDTO;
 import com.io.github.AugustoMello09.Locadora.dto.UserDTOUpdate;
+import com.io.github.AugustoMello09.Locadora.dto.UserInsertDTO;
 import com.io.github.AugustoMello09.Locadora.dto.UserPagedDTO;
 import com.io.github.AugustoMello09.Locadora.entity.Role;
 import com.io.github.AugustoMello09.Locadora.entity.User;
@@ -28,6 +30,9 @@ public class UserService {
 
 	@Autowired
 	private RoleRepository roleRepository;
+	
+	@Autowired
+	private BCryptPasswordEncoder passwordEncoder;
 
 	@Transactional
 	public UserDTO findById(Long id) {
@@ -43,15 +48,16 @@ public class UserService {
 	}
 
 	@Transactional
-	public UserDTO create(UserDTO objDto) {
+	public UserDTO create(UserInsertDTO objDto) {
 		User entity = new User();
 		copyToEntity(objDto, entity);
+		entity.setPassword(passwordEncoder.encode(objDto.getPassword()));
 		entity = repository.save(entity);
 		return new UserDTO(entity);
 
 	}
 
-	private void copyToEntity(UserDTO dto, User entity) {
+	protected void copyToEntity(UserDTO dto, User entity) {
 		entity.setName(dto.getName());
 		entity.setCpf(dto.getCpf());
 		entity.setEmail(dto.getEmail());

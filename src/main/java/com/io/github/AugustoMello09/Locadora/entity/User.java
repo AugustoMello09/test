@@ -29,6 +29,7 @@ public class User implements Serializable {
 	private String name;
 	private String email;
 	private String cpf;
+	private String password;
 
 	@OneToMany(mappedBy = "user")
 	private List<Endereco> enderecos = new ArrayList<>();
@@ -49,12 +50,21 @@ public class User implements Serializable {
 	public User() {
 	}
 
-	public User(Long id, String name, String email, String cpf) {
+	public User(Long id, String name, String email, String cpf, String password) {
 		super();
 		this.id = id;
 		this.name = name;
 		this.email = email;
 		this.cpf = cpf;
+		this.password = password;
+	}
+
+	public String getPassword() {
+		return password;
+	}
+
+	public void setPassword(String password) {
+		this.password = password;
 	}
 
 	public Set<Locacao> getLocacoes() {

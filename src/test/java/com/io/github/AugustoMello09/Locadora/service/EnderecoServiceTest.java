@@ -31,6 +31,8 @@ import com.io.github.AugustoMello09.Locadora.repositories.UserRepository;
 @SpringBootTest
 public class EnderecoServiceTest {
 
+	private static final String SENHA = "123";
+
 	private static final String CEP = "38777012";
 
 	private static final String BAIRRO = "Centro";
@@ -138,7 +140,7 @@ public class EnderecoServiceTest {
 	}
 
 	private void startEndereco() {
-		user = new User(ID, NOME, EMAIL, CPF);
+		user = new User(ID, NOME, EMAIL, CPF, SENHA);
 		estado = new Estado(ID, ESTADO);
 		cidade = new Cidade(ID, CIDADE, estado);
 		endereco = new Endereco(ID, RUA, NUMERO, COMPLEMENTO, BAIRRO, CEP, cidade, user);

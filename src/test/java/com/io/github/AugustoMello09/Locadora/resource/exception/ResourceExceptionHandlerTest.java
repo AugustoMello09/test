@@ -23,7 +23,6 @@ import com.io.github.AugustoMello09.Locadora.resources.exception.StandardError;
 @SpringBootTest
 public class ResourceExceptionHandlerTest {
 
-	
 	private static final String EMAIL_JA_EXISTE = "Email já existe";
 	private static final String NAO_ENCONTRADO = "não encontrado";
 

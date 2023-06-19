@@ -7,5 +7,6 @@ import com.io.github.AugustoMello09.Locadora.entity.User;
 
 @Repository
 public interface UserRepository extends JpaRepository<User, Long> {
-
+	
+	User findByEmail(String email);
 }

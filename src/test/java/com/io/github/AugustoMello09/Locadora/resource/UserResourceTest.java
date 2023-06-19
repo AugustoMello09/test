@@ -26,6 +26,7 @@ import org.springframework.http.ResponseEntity;
 
 import com.io.github.AugustoMello09.Locadora.dto.UserDTO;
 import com.io.github.AugustoMello09.Locadora.dto.UserDTOUpdate;
+import com.io.github.AugustoMello09.Locadora.dto.UserInsertDTO;
 import com.io.github.AugustoMello09.Locadora.dto.UserPagedDTO;
 import com.io.github.AugustoMello09.Locadora.repositories.UserRepository;
 import com.io.github.AugustoMello09.Locadora.resources.UserResource;
@@ -39,7 +40,9 @@ public class UserResourceTest {
 	private static final String CPF = "799.456.132-78";
 
 	private static final long ID = 1L;
-
+	
+	private UserInsertDTO userInsertDTO;
+	
 	@Mock
 	private UserService service;
 
@@ -89,15 +92,15 @@ public class UserResourceTest {
 
 	@Test
 	public void testCreate() {
-		when(service.create(any(UserDTO.class))).thenReturn(userDTO);
-		ResponseEntity<UserDTO> response = resource.create(userDTO);
+		when(service.create(any(UserInsertDTO.class))).thenReturn(userDTO);
+		ResponseEntity<UserDTO> response = resource.create(userInsertDTO);
 		assertNotNull(response);
 		assertEquals(HttpStatus.CREATED, response.getStatusCode());
 		assertEquals(ID, response.getBody().getId());
 		assertEquals(NOME, response.getBody().getName());
 		assertEquals(EMAIL, response.getBody().getEmail());
 		assertEquals(CPF, response.getBody().getCpf());
-		verify(service).create(userDTO);
+		verify(service).create(userInsertDTO);
 	}
 
 	@Test
@@ -123,6 +126,7 @@ public class UserResourceTest {
 	}
 
 	private void startUser() {
+		userInsertDTO = new UserInsertDTO("132");
 		userDTOUpdate = new UserDTOUpdate(NOME, EMAIL);
 		userDTO = new UserDTO(ID, NOME, EMAIL, CPF, null, null);
 	}

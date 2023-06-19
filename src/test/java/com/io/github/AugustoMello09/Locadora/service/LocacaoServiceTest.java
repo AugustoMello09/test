@@ -42,6 +42,8 @@ import com.io.github.AugustoMello09.Locadora.repositories.UserRepository;
 @SpringBootTest
 public class LocacaoServiceTest {
 
+	private static final String SENHA = "123";
+
 	private static final FormaPagamento BOLETO = FormaPagamento.BOLETO;
 
 	private static final String CPF = "cpf";
@@ -231,7 +233,7 @@ public class LocacaoServiceTest {
 	private void startLocacao() {
 		categoria = new Categoria(ID, NOME);
 		estoque = new Estoque(ID, QUANTIDADE, UNDEFINED);
-		user = new User(ID, NOME, EMAIL, CPF);
+		user = new User(ID, NOME, EMAIL, CPF, SENHA);
 		filme = new Filme(ID, NOME, DESCRIÇAO, NOME, PRESO, categoria, estoque);
 		locacao = new Locacao(ID, QUANTIDADE, null, user, filme, BOLETO);
 		filmeDTO = new FilmeDTO(ID, NOME, DESCRIÇAO, NOME, PRESO, null, null);
