@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -22,6 +23,7 @@ public class CategoriaService {
 	private CategoriaRepository repository;
 
 	@Transactional
+	@PreAuthorize("hasAnyRole('ADMIN','OPERATOR')")
 	public CategoriaDTO findById(Long id) {
 		Optional<Categoria> obj = repository.findById(id);
 		Categoria entity = obj.orElseThrow(()-> new ObjectNotFoundException("Categoria Não encontrada"));
@@ -29,12 +31,14 @@ public class CategoriaService {
 	}
 	
 	@Transactional
+	@PreAuthorize("hasAnyRole('ADMIN','OPERATOR')")
 	public Page<CategoriaDTO> findAllPaged(Pageable pageable) {
 		Page<Categoria> list = repository.findAll(pageable);
 		return list.map(x -> new CategoriaDTO(x));
 	}
 	
 	@Transactional
+	@PreAuthorize("hasAnyRole('ADMIN')")
 	public CategoriaDTO create(CategoriaDTO catDto) {
 		Categoria entity = new Categoria();
 		entity.setId(catDto.getId());
@@ -44,13 +48,15 @@ public class CategoriaService {
 	}
 
 	@Transactional
+	@PreAuthorize("hasAnyRole('ADMIN')")
 	public CategoriaDTO update(CategoriaDTO catDto, Long id) {
 		Categoria cat = repository.findById(id).orElseThrow(()-> new ObjectNotFoundException("Categoria Não encontrada"));
 		cat.setNomeCategoria(catDto.getNomeCategoria());
 		repository.save(cat);
 		return new CategoriaDTO(cat);
 	}
-
+	
+	@PreAuthorize("hasAnyRole('ADMIN')")
 	public void delete(Long id) {
 		findById(id);
 	    try {

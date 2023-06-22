@@ -4,6 +4,7 @@ import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -26,6 +27,7 @@ public class EstoqueService {
 	private FilmeRepository filmeRepository;
 
 	@Transactional
+	@PreAuthorize("hasAnyRole('ADMIN','OPERATOR')")
 	public EstoqueDTO findEstoqueById(Long id) {
 		Optional<Estoque> obj = repository.findById(id);
 		Estoque entity = obj.orElseThrow(() -> new ObjectNotFoundException("Estoque Não encontrado"));
@@ -33,6 +35,7 @@ public class EstoqueService {
 	}
 
 	@Transactional
+	@PreAuthorize("hasAnyRole('ADMIN')")
 	public EstoqueDTO create(EstoqueDTO est) {
 		Estoque entity = new Estoque();
 		entity.setId(est.getId());
@@ -43,6 +46,7 @@ public class EstoqueService {
 	}
 
 	@Transactional
+	@PreAuthorize("hasAnyRole('ADMIN')")
 	public EstoqueDTO update(EstoqueDTO est, Long id) {
 		Estoque entity = repository.findById(id)
 				.orElseThrow(() -> new ObjectNotFoundException("Estoque Não encontrado"));
@@ -57,6 +61,7 @@ public class EstoqueService {
 	}
 
 	@Transactional
+	@PreAuthorize("hasAnyRole('ADMIN')")
 	public void delete(Long id) {
 	    findEstoqueById(id);
 	    try {

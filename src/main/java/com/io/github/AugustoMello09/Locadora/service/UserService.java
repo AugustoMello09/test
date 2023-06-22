@@ -6,6 +6,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,8 +26,11 @@ import com.io.github.AugustoMello09.Locadora.entity.User;
 import com.io.github.AugustoMello09.Locadora.repositories.RoleRepository;
 import com.io.github.AugustoMello09.Locadora.repositories.UserRepository;
 
+import lombok.extern.log4j.Log4j2;
+
+@Log4j2
 @Service
-public class UserService {
+public class UserService implements UserDetailsService {
 
 	@Autowired
 	private UserRepository repository;
@@ -33,15 +40,20 @@ public class UserService {
 	
 	@Autowired
 	private BCryptPasswordEncoder passwordEncoder;
+	
+	@Autowired
+	private AuthService authService;
 
 	@Transactional
 	public UserDTO findById(Long id) {
+		authService.validateSelfOrAdmin(id);
 		Optional<User> obj = repository.findById(id);
 		User entity = obj.orElseThrow(() -> new ObjectNotFoundException("Usuário não encontrado"));
 		return new UserDTO(entity);
 	}
 
 	@Transactional
+	@PreAuthorize("hasAnyRole('ADMIN','OPERATOR')")
 	public Page<UserPagedDTO> findAllPaged(Pageable pageable) {
 		Page<User> list = repository.findAll(pageable);
 		return list.map(x -> new UserPagedDTO(x));
@@ -71,13 +83,15 @@ public class UserService {
 
 	@Transactional
 	public UserDTO update(UserDTOUpdate objDto, Long id) {
+		authService.validateSelfOrAdmin(id);
 		User entity = repository.findById(id).orElseThrow(() -> new ObjectNotFoundException("Usuário não encontrado"));
 		entity.setName(objDto.getName());
 		entity.setEmail(objDto.getEmail());
 		entity = repository.save(entity);
 		return new UserDTO(entity);
 	}
-
+	
+	@PreAuthorize("hasAnyRole('ADMIN','OPERATOR')")
 	public void delete(Long id) {
 		findById(id);
 		try {
@@ -85,6 +99,17 @@ public class UserService {
 		} catch (DataIntegrityViolationException e) {
 			throw new DataIntegratyViolationException("Não pode excluir um usuário que tem várias associações");
 		}
+	}
+
+	@Override
+	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+		User user = repository.findByEmail(username);
+		if (user == null) {
+			log.error("Email não encontrado" + username);
+			throw new UsernameNotFoundException("Email não encontrado");
+		}
+		log.info("Email encontrado: " + username);
+		return user;
 	}
 
 }

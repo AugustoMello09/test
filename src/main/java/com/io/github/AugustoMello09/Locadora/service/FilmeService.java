@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -33,6 +34,7 @@ public class FilmeService {
 	private EstoqueRepository estoqueRepository;
 
 	@Transactional
+	@PreAuthorize("hasAnyRole('ADMIN','OPERATOR')")
 	public FilmeDTO findById(Long id) {
 		Optional<Filme> obj = repository.findById(id);
 		Filme entity = obj.orElseThrow(() -> new ObjectNotFoundException("Filme não encontrado"));
@@ -40,12 +42,14 @@ public class FilmeService {
 	}
 
 	@Transactional(readOnly = true)
+	@PreAuthorize("hasAnyRole('ADMIN','OPERATOR')")
 	public List<Filme> findAll(Long idCategoria) {
 		categoriaService.findById(idCategoria);
 		return repository.findAllByCategory(idCategoria);
 	}
 
 	@Transactional
+	@PreAuthorize("hasAnyRole('ADMIN')")
 	public FilmeDTO create(FilmeDTO fil, Long idCategoria, Long idEstoque) {
 		Estoque estoque = estoqueRepository.findById(idEstoque)
 				.orElseThrow(() -> new ObjectNotFoundException("Estoque não encontrado"));
@@ -64,6 +68,7 @@ public class FilmeService {
 	}
 
 	@Transactional
+	@PreAuthorize("hasAnyRole('ADMIN')")
 	public FilmeDTO update(FilmeDTOUpdate fil, Long id) {
 		Filme entity = repository.findById(id).orElseThrow(() -> new ObjectNotFoundException("Filme não encontrado"));
 		entity.setNome(fil.getNome());

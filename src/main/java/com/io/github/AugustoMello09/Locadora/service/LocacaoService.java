@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -36,6 +37,7 @@ public class LocacaoService {
 	private EstoqueRepository estoqueRepository;
 
 	@Transactional
+	@PreAuthorize("hasAnyRole('ADMIN','OPERATOR')")
 	public LocacaoDTO findById(Long id) {
 		Optional<Locacao> locacao = repository.findById(id);
 		Locacao entity = locacao.orElseThrow(()-> new ObjectNotFoundException("Locacao não encontrada"));
@@ -43,6 +45,7 @@ public class LocacaoService {
 	}
 	
 	@Transactional
+	@PreAuthorize("hasAnyRole('ADMIN','OPERATOR')")
 	public LocacaoDTO create(Long idUser, Long idFilme, LocacaoDTO obj) {
 		  User user = userRepository.findById(idUser).orElseThrow(
 		            () -> new ObjectNotFoundException("Usuário não encontrado"));
@@ -68,6 +71,7 @@ public class LocacaoService {
 	}
 	
 	@Transactional
+	@PreAuthorize("hasAnyRole('ADMIN','OPERATOR')")
 	public void devolver(Long idLocacao, LocacaoDTO dto) {
 		Locacao entity = repository.findById(idLocacao).orElseThrow(
 				()-> new ObjectNotFoundException("Locacao não encontrada"));

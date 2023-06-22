@@ -3,6 +3,7 @@ package com.io.github.AugustoMello09.Locadora.service;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -28,6 +29,7 @@ public class EnderecoService {
 	private CidadeRepository cidadeRepository;
 	
 	@Transactional
+	@PreAuthorize("hasAnyRole('ADMIN','OPERATOR')")
 	public EnderecoDTO findById(Long id) {
 		Optional<Endereco> end = repository.findById(id);
 		Endereco entity = end.orElseThrow(()-> new ObjectNotFoundException("Endereço Não encontrada"));
@@ -35,6 +37,7 @@ public class EnderecoService {
 	}
 	
 	@Transactional
+	@PreAuthorize("hasAnyRole('ADMIN','OPERATOR')")
 	public EnderecoDTO create(EnderecoDTO end, Long idUser, Long idCidade) {
 		User user = userRepository.findById(idUser).orElseThrow(
 				()-> new ObjectNotFoundException("Usuário Não encontrado"));

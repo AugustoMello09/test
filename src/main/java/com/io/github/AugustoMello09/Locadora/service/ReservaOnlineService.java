@@ -3,6 +3,7 @@ package com.io.github.AugustoMello09.Locadora.service;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -30,6 +31,7 @@ public class ReservaOnlineService {
 	private EstoqueRepository estoqueRepository;
 
 	@Transactional
+	@PreAuthorize("hasAnyRole('ADMIN','OPERATOR')")
 	public ReservaOnlineDTO findReservaOnlineById(Long id) {
 		Optional<ReservaOnline> obj = repository.findById(id);
 		ReservaOnline entity = obj.orElseThrow(() -> new ObjectNotFoundException("ReservaOnline não encontrada"));
@@ -37,6 +39,7 @@ public class ReservaOnlineService {
 	}
 
 	@Transactional
+	@PreAuthorize("hasAnyRole('ADMIN','OPERATOR')")
 	public void cancelarReserva(Long id) {
 		ReservaOnline reserva = repository.findById(id)
 				.orElseThrow(() -> new ObjectNotFoundException("ReservaOnline não encontrada"));
@@ -46,6 +49,7 @@ public class ReservaOnlineService {
 	}
 
 	@Transactional
+	@PreAuthorize("hasAnyRole('ADMIN','OPERATOR')")
 	public ReservaOnlineDTO create(Long idUser, Long idEstoque, ReservaOnlineDTO objDto) {
 		User user = userRepository.findById(idUser)
 				.orElseThrow(() -> new ObjectNotFoundException("Usuário não encontrado"));

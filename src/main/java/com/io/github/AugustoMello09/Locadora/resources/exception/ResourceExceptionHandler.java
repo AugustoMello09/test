@@ -12,7 +12,9 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
 import com.io.github.AugustoMello09.Locadora.Services.exception.DataIntegratyViolationException;
+import com.io.github.AugustoMello09.Locadora.Services.exception.ForbiddenException;
 import com.io.github.AugustoMello09.Locadora.Services.exception.ObjectNotFoundException;
+import com.io.github.AugustoMello09.Locadora.Services.exception.UnauthorizedException;
 
 @ControllerAdvice
 public class ResourceExceptionHandler {
@@ -36,5 +38,17 @@ public class ResourceExceptionHandler {
 			error.addErrors(x.getField(), x.getDefaultMessage());
 		}
 		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
+	}
+	
+	@ExceptionHandler(ForbiddenException.class)
+	public ResponseEntity<OAuthCustomError> forbidden(ForbiddenException e) {
+		OAuthCustomError error = new OAuthCustomError("forbidden", e.getMessage());
+		return ResponseEntity.status(HttpStatus.FORBIDDEN).body(error);
+	}
+	
+	@ExceptionHandler(UnauthorizedException.class)
+	public ResponseEntity<OAuthCustomError> unauthorized(UnauthorizedException e) {
+		OAuthCustomError error = new OAuthCustomError("Não autorizado", e.getMessage());
+		return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(error);
 	}
 }

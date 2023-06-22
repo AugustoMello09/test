@@ -4,6 +4,7 @@ import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -20,6 +21,7 @@ public class RoleService {
 	private RoleRepository repository;
 
 	@Transactional
+	@PreAuthorize("hasAnyRole('ADMIN','OPERATOR')")
 	public RoleDTO findById(Long id) {
 		Optional<Role> obj = repository.findById(id);
 		Role entity = obj.orElseThrow(() -> new ObjectNotFoundException("Role não encontrada"));
@@ -27,6 +29,7 @@ public class RoleService {
 	}
 
 	@Transactional
+	@PreAuthorize("hasAnyRole('ADMIN')")
 	public RoleDTO create(RoleDTO objDto) {
 		Role entity = new Role();
 		entity.setId(objDto.getId());
@@ -34,7 +37,8 @@ public class RoleService {
 		repository.save(entity);
 		return new RoleDTO(entity);
 	}
-
+	
+	@PreAuthorize("hasAnyRole('ADMIN')")
 	public void delete(Long id) {
 		findById(id);
 		try {

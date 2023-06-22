@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -30,6 +31,7 @@ public class MultaService {
 	private PagamentoRepository pagamentoRepository;
 	
 	@Transactional
+	@PreAuthorize("hasAnyRole('ADMIN','OPERATOR')")
 	public MultaDTO findById(Long id) {
 		Optional<Multa> obj = repository.findById(id);
 		Multa entity = obj.orElseThrow(()-> new ObjectNotFoundException("Multa não encontrada"));
@@ -37,6 +39,7 @@ public class MultaService {
 	}
 	
 	@Transactional
+	@PreAuthorize("hasAnyRole('ADMIN','OPERATOR')")
 	public void pagarMultaBoleto(Long multaId, PagamentoComBoletoDTO pagamentoDTO) {
 		Optional<Multa> multa = repository.findById(multaId);
 	    if (multa.isPresent() && multa.get().getValor() > 0) {
@@ -54,7 +57,9 @@ public class MultaService {
 	    }
 		
 	}
-
+	
+	@Transactional
+	@PreAuthorize("hasAnyRole('ADMIN','OPERATOR')")
 	public void pagarMultaCartao(Long multaId, PagamentoComCartaoDTO pagamentoDTO) {
 		Optional<Multa> multa = repository.findById(multaId);
 	    if (multa.isPresent() && multa.get().getValor() > 0) {
@@ -70,7 +75,9 @@ public class MultaService {
 	    }
 		
 	}
-
+	
+	@Transactional
+	@PreAuthorize("hasAnyRole('ADMIN','OPERATOR')")
 	public void pagarMultaPix(Long multaId, PagamentoComPixDTO pagamentoDTO) {
 		Optional<Multa> multa = repository.findById(multaId);
 	    if (multa.isPresent() && multa.get().getValor() > 0) {

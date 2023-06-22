@@ -4,6 +4,7 @@ import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -25,6 +26,7 @@ public class CidadeService {
 	private EstadoRepository estadoRepository;
 
 	@Transactional
+	@PreAuthorize("hasAnyRole('ADMIN','OPERATOR')")
 	public CidadeDTO findById(Long id) {
 		Optional<Cidade> obj = repository.findById(id);
 		Cidade entity = obj.orElseThrow(() -> new ObjectNotFoundException("Cidade Não encontrada"));
@@ -32,6 +34,7 @@ public class CidadeService {
 	}
 
 	@Transactional
+	@PreAuthorize("hasAnyRole('ADMIN','OPERATOR')")
 	public CidadeDTO create(CidadeDTO cidDto, Long idEstado) {
 		Cidade cidade = new Cidade();
 		cidade.setId(cidDto.getId());
@@ -42,7 +45,8 @@ public class CidadeService {
 		repository.save(cidade);
 		return new CidadeDTO(cidade);
 	}
-
+	
+	@PreAuthorize("hasAnyRole('ADMIN')")
 	public void delete(Long id) {
 		findById(id);
 		try {
