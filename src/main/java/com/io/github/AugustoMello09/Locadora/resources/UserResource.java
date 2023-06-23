@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -25,6 +26,10 @@ import com.io.github.AugustoMello09.Locadora.dto.UserInsertDTO;
 import com.io.github.AugustoMello09.Locadora.dto.UserPagedDTO;
 import com.io.github.AugustoMello09.Locadora.service.UserService;
 
+import io.swagger.annotations.Api;
+
+@CrossOrigin(origins = "*")
+@Api(value = "Locadora")
 @RestController
 @RequestMapping(value = "/users")
 public class UserResource {
@@ -32,6 +37,7 @@ public class UserResource {
 	@Autowired
 	private UserService service;
 	
+
 	@GetMapping(value = "/{id}")
 	public ResponseEntity<UserDTO> findById(@PathVariable Long id){
 		UserDTO objDto = service.findById(id);
