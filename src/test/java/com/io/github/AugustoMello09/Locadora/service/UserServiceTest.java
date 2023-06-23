@@ -76,6 +76,9 @@ public class UserServiceTest {
 
 	@Mock
 	private BCryptPasswordEncoder passwordEncoder;
+	
+	@Mock
+	private AuthService authService;
 
 	@BeforeEach
 	void setUp() {
@@ -85,6 +88,7 @@ public class UserServiceTest {
 
 	@Test
 	void whenFindByIdThenReturnUserDTO() {
+		authService.validateSelfOrAdmin(ID);
 		when(repository.findById(anyLong())).thenReturn(optionalUser);
 		UserDTO response = service.findById(ID);
 		assertNotNull(response);
@@ -170,6 +174,7 @@ public class UserServiceTest {
 		Long id = 1L;
 		UserDTOUpdate objDto = new UserDTOUpdate("Novo Nome", "novoemail@gmail.com");
 		User user = new User(id, "Nome Antigo", "emailantigo@gmail.com", "123456789", "123");
+		authService.validateSelfOrAdmin(ID);
 		when(repository.findById(id)).thenReturn(Optional.of(user));
 		when(repository.save(any(User.class))).thenReturn(user);
 		UserDTO result = service.update(objDto, id);
