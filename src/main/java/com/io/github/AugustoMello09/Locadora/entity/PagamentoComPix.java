@@ -8,6 +8,13 @@ import javax.persistence.Table;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.io.github.AugustoMello09.Locadora.entities.enums.FormaPagamento;
 
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+@Getter
+@Setter
+@NoArgsConstructor
 @Entity
 @Table(name = "tb_pagamento_pix")
 public class PagamentoComPix extends Pagamento {
@@ -16,22 +23,10 @@ public class PagamentoComPix extends Pagamento {
 	@JsonFormat(pattern = "dd/MM/yyyy")
 	private LocalDateTime dataPagamento;
 
-	public PagamentoComPix() {
-
-	}
-
-	public PagamentoComPix(Long id, Double valor, FormaPagamento  formaPagamento,
-			 Multa multa, LocalDateTime dataPagamento) {
+	public PagamentoComPix(Long id, Double valor, FormaPagamento formaPagamento, Multa multa,
+			LocalDateTime dataPagamento) {
 		super(id, valor, formaPagamento, multa);
 		this.dataPagamento = LocalDateTime.now();
-	}
-
-	public LocalDateTime getDataPagamento() {
-		return dataPagamento;
-	}
-
-	public void setDataPagamento(LocalDateTime dataPagamento) {
-		this.dataPagamento = dataPagamento;
 	}
 
 }

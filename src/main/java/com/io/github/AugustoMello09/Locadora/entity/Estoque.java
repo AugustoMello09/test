@@ -3,7 +3,6 @@ package com.io.github.AugustoMello09.Locadora.entity;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -14,7 +13,11 @@ import javax.persistence.Table;
 
 import com.io.github.AugustoMello09.Locadora.entities.enums.StatusEstoque;
 
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 
+@NoArgsConstructor
+@EqualsAndHashCode(of = "id")
 @Entity
 @Table(name = "tb_estoque")
 public class Estoque implements Serializable {
@@ -36,9 +39,7 @@ public class Estoque implements Serializable {
 
 	@OneToMany(mappedBy = "estoque")
 	private List<ReservaOnline> reservasOnline = new ArrayList<>();
-	
-	public Estoque() {}
-	
+
 	public Estoque(Long id, int quantidade, StatusEstoque status) {
 		super();
 		this.id = id;
@@ -128,23 +129,6 @@ public class Estoque implements Serializable {
 
 	public void setQuantidade(int quantidade) {
 		this.quantidade = quantidade;
-	}
-
-	@Override
-	public int hashCode() {
-		return Objects.hash(id);
-	}
-
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		Estoque other = (Estoque) obj;
-		return Objects.equals(id, other.id);
 	}
 
 }
