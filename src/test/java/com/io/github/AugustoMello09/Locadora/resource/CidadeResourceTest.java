@@ -58,16 +58,15 @@ public class CidadeResourceTest {
 		assertEquals(CidadeDTO.class, response.getBody().getClass());
 		assertEquals(ID, response.getBody().getId());
 		assertEquals(CIDADE, response.getBody().getName());
-		assertNotNull(response.getBody().getEstado());
-		assertEquals(ID, response.getBody().getEstado().getId());
-		assertEquals(ESTADO, response.getBody().getEstado().getName());
+		assertNotNull(response.getBody().getEstadoId());
+		assertEquals(ID, response.getBody().getEstadoId().getId());
+		assertEquals(ESTADO, response.getBody().getEstadoId().getName());
 	}
 
 	@Test
 	public void testCreate() {
-		Long estadoId = ID;
-		when(service.create(cidadeDTO, estadoId)).thenReturn(cidadeDTO);
-		ResponseEntity<CidadeDTO> response = resource.create(estadoId, cidadeDTO);
+		when(service.create(cidadeDTO)).thenReturn(cidadeDTO);
+		ResponseEntity<CidadeDTO> response = resource.create(cidadeDTO);
 		assertNotNull(response);
 		assertNotNull(response.getBody());
 		assertEquals(HttpStatus.CREATED, response.getStatusCode());
@@ -75,10 +74,10 @@ public class CidadeResourceTest {
 		assertEquals(CidadeDTO.class, response.getBody().getClass());
 		assertEquals(ID, response.getBody().getId());
 		assertEquals(CIDADE, response.getBody().getName());
-		assertNotNull(response.getBody().getEstado());
-		assertEquals(ID, response.getBody().getEstado().getId());
-		assertEquals(ESTADO, response.getBody().getEstado().getName());
-		verify(service).create(cidadeDTO, estadoId);
+		assertNotNull(response.getBody().getEstadoId());
+		assertEquals(ID, response.getBody().getEstadoId().getId());
+		assertEquals(ESTADO, response.getBody().getEstadoId().getName());
+		verify(service).create(cidadeDTO);
 	}
 
 	@Test
@@ -95,4 +94,5 @@ public class CidadeResourceTest {
 		estadoDTO = new EstadoDTO(ID, ESTADO);
 		cidadeDTO = new CidadeDTO(ID, CIDADE, estadoDTO);
 	}
+	
 }

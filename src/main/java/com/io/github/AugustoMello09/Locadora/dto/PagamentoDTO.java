@@ -21,9 +21,9 @@ public abstract class PagamentoDTO implements Serializable {
 	private Double valor;
 	
 	private FormaPagamento formaPagamento;
-
+	
 	private MultaDTO multa;
-
+	
 	public PagamentoDTO() {
 	}
 
@@ -31,6 +31,7 @@ public abstract class PagamentoDTO implements Serializable {
 		this.id = entity.getId();
 		this.valor = entity.getValor();
 		this.formaPagamento = entity.getformaPagamento();
+		multa = new MultaDTO(entity.getMulta());
 	}
 
 }

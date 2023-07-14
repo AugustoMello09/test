@@ -50,25 +50,6 @@ public class FilmeService {
 
 	@Transactional
 	@PreAuthorize("hasAnyRole('ADMIN')")
-	public FilmeDTO create(FilmeDTO fil, Long idCategoria, Long idEstoque) {
-		Estoque estoque = estoqueRepository.findById(idEstoque)
-				.orElseThrow(() -> new ObjectNotFoundException("Estoque não encontrado"));
-		Categoria categoria = categoriaRepository.findById(idCategoria)
-				.orElseThrow(() -> new ObjectNotFoundException("Categoria não encontrada"));
-		Filme entity = new Filme();
-		entity.setId(fil.getId());
-		entity.setNome(fil.getNome());
-		entity.setDescricao(fil.getDescricao());
-		entity.setDiretor(fil.getDiretor());
-		entity.setValorAluguel(fil.getValorAluguel());
-		entity.setCategoria(categoria);
-		entity.setEstoque(estoque);
-		repository.save(entity);
-		return new FilmeDTO(entity);
-	}
-
-	@Transactional
-	@PreAuthorize("hasAnyRole('ADMIN')")
 	public FilmeDTO update(FilmeDTOUpdate fil, Long id) {
 		Filme entity = repository.findById(id).orElseThrow(() -> new ObjectNotFoundException("Filme não encontrado"));
 		entity.setNome(fil.getNome());
@@ -76,6 +57,31 @@ public class FilmeService {
 		entity.setDiretor(fil.getDiretor());
 		repository.save(entity);
 		return new FilmeDTO(entity);
+	}
+	
+	@Transactional
+	@PreAuthorize("hasAnyRole('ADMIN')")
+	public FilmeDTO create(FilmeDTO fil) {
+		Filme entity = new Filme();
+		entity.setId(fil.getId());
+		entity.setNome(fil.getNome());
+		entity.setDescricao(fil.getDescricao());
+		entity.setDiretor(fil.getDiretor());
+		entity.setValorAluguel(fil.getValorAluguel());
+		Long estoqueId = fil.getEstoque().getId();
+		if (estoqueId != null) {
+			Estoque estoque = estoqueRepository.findById(estoqueId)
+					.orElseThrow(() -> new ObjectNotFoundException("Estoque não encontrado"));
+			entity.setEstoque(estoque);
+		}
+		Long categoriaId = fil.getCategoria().getId();
+		if (categoriaId != null) {
+			Categoria categoria = categoriaRepository.findById(categoriaId)
+					.orElseThrow(() -> new ObjectNotFoundException("Categoria não encontrada"));
+			entity.setCategoria(categoria);
+		}
+		repository.save(entity);
+		return new FilmeDTO(entity);	
 	}
 
 }

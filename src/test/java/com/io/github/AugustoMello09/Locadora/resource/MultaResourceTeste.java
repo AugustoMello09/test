@@ -64,31 +64,32 @@ public class MultaResourceTeste {
 	@Test
 	public void testPagarBoleto() {
 		PagamentoComBoletoDTO pagamentoDTO = new PagamentoComBoletoDTO();
-		ResponseEntity<Void> response = resource.pagarMultaComBoleto(ID, pagamentoDTO);
+		ResponseEntity<Void> response = resource.pagarMultaComBoleto(pagamentoDTO);
 		assertNotNull(response);
 		assertEquals(HttpStatus.OK, response.getStatusCode());
-		verify(service).pagarMultaBoleto(ID, pagamentoDTO);
+		verify(service).pagarMultaBoleto(pagamentoDTO);
 	}
 
 	@Test
 	public void testPagarCartao() {
 		PagamentoComCartaoDTO pagamentoDTO = new PagamentoComCartaoDTO();
-		ResponseEntity<Void> response = resource.pagarMultaComCartão(ID, pagamentoDTO);
+		ResponseEntity<Void> response = resource.pagarMultaComCartão(pagamentoDTO);
 		assertNotNull(response);
 		assertEquals(HttpStatus.OK, response.getStatusCode());
-		verify(service).pagarMultaCartao(ID, pagamentoDTO);
+		verify(service).pagarMultaCartao(pagamentoDTO);
 	}
 
 	@Test
 	public void testPagarPix() {
 		PagamentoComPixDTO pagamentoDTO = new PagamentoComPixDTO();
-		ResponseEntity<Void> response = resource.pagarMultaComPix(ID, pagamentoDTO);
+		ResponseEntity<Void> response = resource.pagarMultaComPix(pagamentoDTO);
 		assertNotNull(response);
 		assertEquals(HttpStatus.OK, response.getStatusCode());
-		verify(service).pagarMultaPix(ID, pagamentoDTO);
+		verify(service).pagarMultaPix(pagamentoDTO);
 	}
 
 	private void startMulta() {
 		multaDTO = new MultaDTO(ID, MULTA);
 	}
+
 }

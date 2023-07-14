@@ -6,6 +6,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -13,6 +14,7 @@ import static org.mockito.Mockito.when;
 import java.time.LocalDate;
 import java.util.Optional;
 
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -22,7 +24,11 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 import com.io.github.AugustoMello09.Locadora.Services.exception.DataIntegratyViolationException;
 import com.io.github.AugustoMello09.Locadora.Services.exception.ObjectNotFoundException;
+import com.io.github.AugustoMello09.Locadora.dto.EstoqueDTO;
 import com.io.github.AugustoMello09.Locadora.dto.ReservaDTO;
+import com.io.github.AugustoMello09.Locadora.dto.ReservaDTOInsert;
+import com.io.github.AugustoMello09.Locadora.dto.UserDTO;
+import com.io.github.AugustoMello09.Locadora.entities.enums.StatusEstoque;
 import com.io.github.AugustoMello09.Locadora.entities.enums.StatusReserva;
 import com.io.github.AugustoMello09.Locadora.entity.Estoque;
 import com.io.github.AugustoMello09.Locadora.entity.Reserva;
@@ -53,9 +59,16 @@ public class ReservaServiceTest {
 
 	@InjectMocks
 	private ReservaService service;
-	
+
 	private Reserva reserva;
 	private Optional<Reserva> optionalReserva;
+	private ReservaDTOInsert reservaDTOInsert;
+	private UserDTO userDTO;
+	private EstoqueDTO estoqueDTO;
+	private User user;
+	private Estoque estoque;
+	private Optional<User> optionalUser;
+	private Optional<Estoque> optionalEstoque;
 
 	@BeforeEach
 	void setUp() {
@@ -83,69 +96,62 @@ public class ReservaServiceTest {
 
 	@Test
 	public void testCreate() {
-		Long idUser = ID;
-		Long idEstoque = 2L;
-		ReservaDTO objDto = new ReservaDTO();
-		User user = new User();
-		Estoque estoque = new Estoque();
-		when(userRepository.findById(idUser)).thenReturn(Optional.of(user));
-		when(estoqueRepository.findById(idEstoque)).thenReturn(Optional.of(estoque));
-		ReservaDTO result = service.create(idUser, idEstoque, objDto);
-		assertEquals(objDto.getId(), result.getId());
-		assertEquals(objDto.getQtdReservada(), result.getQtdReservada());
-		assertEquals(objDto.getDataReserva(), result.getDataReserva());
+		when(repository.save(any(Reserva.class))).thenReturn(reserva);
+		when(userRepository.findById(anyLong())).thenReturn(optionalUser);
+		when(estoqueRepository.findById(anyLong())).thenReturn(optionalEstoque);
+		ReservaDTO result = service.create(reservaDTOInsert);
+		assertEquals(ReservaDTO.class, result.getClass());
 		verify(repository, times(1)).save(any(Reserva.class));
+	}
+
+	@Test
+	public void testCreate_EstoqueNotFound() {
+		Long idEstoque = 1L;
+		when(estoqueRepository.findById(idEstoque)).thenReturn(Optional.empty());
+		assertThrows(ObjectNotFoundException.class, () -> service.create(reservaDTOInsert));
 	}
 
 	@Test
 	public void testCreate_UserNotFound() {
 		Long idUser = 1L;
-		Long idEstoque = 2L;
-		ReservaDTO objDto = new ReservaDTO();
 		when(userRepository.findById(idUser)).thenReturn(Optional.empty());
-		assertThrows(ObjectNotFoundException.class, () -> service.create(idUser, idEstoque, objDto));
+		assertThrows(ObjectNotFoundException.class, () -> service.create(reservaDTOInsert));
 	}
 
 	@Test
-	public void testCreate_ReservaNotFound() {
-		Long idUser = 1L;
-		Long idEstoque = 2L;
-		ReservaDTO objDto = new ReservaDTO();
-		when(userRepository.findById(idUser)).thenReturn(Optional.of(new User()));
-		when(estoqueRepository.findById(idEstoque)).thenReturn(Optional.empty());
-		assertThrows(ObjectNotFoundException.class, () -> service.create(idUser, idEstoque, objDto));
-	}
-
-	@Test
-	public void testCreate_QuantidadeExceeded() {
-		Long idUser = 1L;
-		Long idEstoque = 2L;
-		ReservaDTO objDto = new ReservaDTO();
-		objDto.setQtdReservada(10);
-		User user = new User();
-		Estoque estoque = new Estoque();
-		estoque.setQuantidade(5);
-		when(userRepository.findById(idUser)).thenReturn(Optional.of(user));
-		when(estoqueRepository.findById(idEstoque)).thenReturn(Optional.of(estoque));
-		assertThrows(DataIntegratyViolationException.class, () -> service.create(idUser, idEstoque, objDto));
+	public void testCreate_QuantidadeMaiorDoQueDisponivel() {
+		when(userRepository.findById(anyLong())).thenReturn(optionalUser);
+		when(estoqueRepository.findById(anyLong())).thenReturn(optionalEstoque);
+		reservaDTOInsert.setQtdReservada(10);
+		Assertions.assertThrows(DataIntegratyViolationException.class, () -> {
+			service.create(reservaDTOInsert);
+		});
+		verify(repository, never()).save(any(Reserva.class));
 	}
 
 	@Test
 	public void testCancelarReserva() {
-	    Long id = ID;
-	    Reserva reserva = new Reserva();
-	    Estoque estoque = new Estoque();
-	    estoque.getReservas().add(reserva);
-	    reserva.setEstoque(estoque);
-	    when(repository.findById(id)).thenReturn(Optional.of(reserva));
-	    service.cancelarReserva(id);
-	    verify(repository, times(1)).findById(id);
-	    verify(repository, times(1)).delete(reserva);
-	    assertFalse(estoque.getReservas().contains(reserva));
+		Long id = ID;
+		estoque.getReservas().add(reserva);
+		reserva.setEstoque(estoque);
+		when(repository.findById(id)).thenReturn(Optional.of(reserva));
+		service.cancelarReserva(id);
+		verify(repository, times(1)).findById(id);
+		verify(repository, times(1)).delete(reserva);
+		assertFalse(estoque.getReservas().contains(reserva));
 	}
 
 	private void startReserva() {
 		reserva = new Reserva(ID, QUANTIDADE, DATA, null, null, ATIVA);
 		optionalReserva = Optional.of(reserva);
+		estoqueDTO = new EstoqueDTO(ID, QUANTIDADE, StatusEstoque.DISPONIVEL, null, null, QUANTIDADE, QUANTIDADE,
+				QUANTIDADE);
+		userDTO = new UserDTO(ID, "oi", "oi", "oi", null);
+		reservaDTOInsert = new ReservaDTOInsert(userDTO, estoqueDTO);
+		user = new User(ID, "oi", "oi", "oi", "123");
+		estoque = new Estoque(ID, QUANTIDADE, StatusEstoque.DISPONIVEL);
+		optionalUser = Optional.of(user);
+		optionalEstoque = Optional.of(estoque);
 	}
+
 }

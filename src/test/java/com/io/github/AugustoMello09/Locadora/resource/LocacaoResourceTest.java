@@ -98,10 +98,8 @@ public class LocacaoResourceTest {
 
 	@Test
 	public void testCreate() {
-		Long idUser = ID;
-		Long idFilme = ID;
-		when(service.create(idUser, idFilme, locacaoDTO)).thenReturn(locacaoDTO);
-		ResponseEntity<LocacaoDTO> response = resource.create(idUser, idFilme, locacaoDTO);
+		when(service.create(locacaoDTO)).thenReturn(locacaoDTO);
+		ResponseEntity<LocacaoDTO> response = resource.create(locacaoDTO);
 		assertNotNull(response);
 		assertNotNull(response.getBody());
 		assertEquals(HttpStatus.CREATED, response.getStatusCode());
@@ -125,7 +123,8 @@ public class LocacaoResourceTest {
 
 	private void startlocacao() {
 		filmeDTO = new FilmeDTO(ID, NOME, DESCRIÇAO, NOME, PRESO, null, null);
-		userDTO = new UserDTO(ID, DESCRIÇAO, EMAIL, CPF, null, null);
+		userDTO = new UserDTO(ID, DESCRIÇAO, EMAIL, CPF, null);
 		locacaoDTO = new LocacaoDTO(ID, QUANTIDADE, BOLETO, null, null, null, userDTO, filmeDTO, null);
 	}
+	
 }

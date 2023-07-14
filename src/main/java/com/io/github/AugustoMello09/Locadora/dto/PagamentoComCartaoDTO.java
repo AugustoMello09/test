@@ -22,6 +22,7 @@ public class PagamentoComCartaoDTO extends PagamentoDTO implements Serializable 
 	}
 	
 	public PagamentoComCartaoDTO(PagamentoComCartao entity){
+		super(entity);
 		this.numeroParcelas = entity.getNumeroParcelas();
 	}
 	

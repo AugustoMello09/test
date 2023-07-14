@@ -9,11 +9,11 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import com.io.github.AugustoMello09.Locadora.dto.ReservaDTO;
+import com.io.github.AugustoMello09.Locadora.dto.ReservaDTOInsert;
 import com.io.github.AugustoMello09.Locadora.service.ReservaService;
 
 @RestController
@@ -30,9 +30,8 @@ public class ReservaResource {
 	}
 
 	@PostMapping
-	public ResponseEntity<ReservaDTO> create(@RequestParam(value = "user", defaultValue = "0") Long idUser,
-			@RequestParam(value = "estoque", defaultValue = "0") Long idEstoque,@RequestBody ReservaDTO objDto) {
-		ReservaDTO newObj = service.create(idUser, idEstoque, objDto);
+	public ResponseEntity<ReservaDTO> create(@RequestBody ReservaDTOInsert objDto) {
+		ReservaDTO newObj = service.create(objDto);
 		URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(newObj.getId()).toUri();
 		return ResponseEntity.created(uri).body(newObj);
 	}

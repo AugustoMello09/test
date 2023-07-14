@@ -206,7 +206,7 @@ public class UserServiceTest {
 	private void startUser() {
 		userInsertDTO = new UserInsertDTO(passwordEncoder.encode("123"));
 		roleDTO = new RoleDTO(ID, AUT);
-		userDTO = new UserDTO(ID, NOME, EMAIL, CPF, null, new HashSet<>());
+		userDTO = new UserDTO(ID, NOME, EMAIL, CPF, new HashSet<>());
 		userDTO.getRoles().add(roleDTO);
 		role = new Role(ID, AUT);
 		user = new User(ID, NOME, EMAIL, CPF, "132");

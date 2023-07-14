@@ -20,6 +20,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import com.io.github.AugustoMello09.Locadora.Services.exception.ObjectNotFoundException;
 import com.io.github.AugustoMello09.Locadora.dto.CidadeDTO;
 import com.io.github.AugustoMello09.Locadora.dto.EnderecoDTO;
+import com.io.github.AugustoMello09.Locadora.dto.EstadoDTO;
+import com.io.github.AugustoMello09.Locadora.dto.UserDTO;
 import com.io.github.AugustoMello09.Locadora.entity.Cidade;
 import com.io.github.AugustoMello09.Locadora.entity.Endereco;
 import com.io.github.AugustoMello09.Locadora.entity.Estado;
@@ -70,13 +72,19 @@ public class EnderecoServiceTest {
 	private Optional<Endereco> optionalEndereco;
 	private Endereco endereco;
 
+	private EnderecoDTO enderecoDTO;
+
+	private Optional<Cidade> optionalCidade;
 	private CidadeDTO cidadeDTO;
 
 	private Cidade cidade;
 
+	private EstadoDTO estadoDTO;
 	private Estado estado;
 
+	private Optional<User> optionalUser;
 	private User user;
+	private UserDTO userDTO;
 
 	@BeforeEach
 	void setUp() {
@@ -98,9 +106,9 @@ public class EnderecoServiceTest {
 		assertNotNull(response.getCidade());
 		assertEquals(ID, response.getCidade().getId());
 		assertEquals(CIDADE, response.getCidade().getName());
-		assertNotNull(response.getCidade().getEstado());
-		assertEquals(ID, response.getCidade().getEstado().getId());
-		assertEquals(ESTADO, response.getCidade().getEstado().getName());
+		assertNotNull(response.getCidade().getEstadoId());
+		assertEquals(ID, response.getCidade().getEstadoId().getId());
+		assertEquals(ESTADO, response.getCidade().getEstadoId().getName());
 	}
 
 	@Test
@@ -113,16 +121,10 @@ public class EnderecoServiceTest {
 	void whenCreateEnderecoThenReturnEnderecoDTO() {
 		Long cidadeId = ID;
 		Long userId = ID;
-		when(cidadeRepository.findById(anyLong())).thenReturn(Optional.of(cidade));
-		when(userRepository.findById(anyLong())).thenReturn(Optional.of(user));
-		EnderecoDTO enderecoDTO = new EnderecoDTO(ID, RUA, NUMERO, COMPLEMENTO, BAIRRO, CEP, cidadeDTO);
-		enderecoDTO.setCidade(cidadeDTO);
-		when(repository.save(any(Endereco.class))).thenAnswer(invocation -> {
-			Endereco savedEndereco = invocation.getArgument(0);
-			savedEndereco.setId(ID);
-			return savedEndereco;
-		});
-		EnderecoDTO response = service.create(enderecoDTO, userId, cidadeId);
+		when(cidadeRepository.findById(anyLong())).thenReturn(optionalCidade);
+		when(userRepository.findById(anyLong())).thenReturn(optionalUser);
+		when(repository.save(any(Endereco.class))).thenReturn(endereco);
+		EnderecoDTO response = service.create(enderecoDTO);
 		assertNotNull(response);
 		assertEquals(EnderecoDTO.class, response.getClass());
 		assertEquals(ID, response.getId());
@@ -132,18 +134,23 @@ public class EnderecoServiceTest {
 		assertEquals(BAIRRO, response.getBairro());
 		assertEquals(CEP, response.getCep());
 		assertNotNull(response.getCidade());
-		assertEquals(cidadeId, response.getCidade().getId());
-		assertEquals(CIDADE, response.getCidade().getName());
+		assertNotNull(response.getUser());
 		verify(cidadeRepository).findById(cidadeId);
 		verify(userRepository).findById(userId);
 		verify(repository).save(any(Endereco.class));
 	}
 
 	private void startEndereco() {
+		estadoDTO = new EstadoDTO(ID, NOME);
+		cidadeDTO = new CidadeDTO(ID, BAIRRO, estadoDTO);
 		user = new User(ID, NOME, EMAIL, CPF, SENHA);
 		estado = new Estado(ID, ESTADO);
 		cidade = new Cidade(ID, CIDADE, estado);
 		endereco = new Endereco(ID, RUA, NUMERO, COMPLEMENTO, BAIRRO, CEP, cidade, user);
+		userDTO = new UserDTO(ID, BAIRRO, EMAIL, CPF, null);
+		enderecoDTO = new EnderecoDTO(ID, RUA, NUMERO, COMPLEMENTO, BAIRRO, CEP, cidadeDTO, userDTO);
 		optionalEndereco = Optional.of(endereco);
+		optionalCidade = Optional.of(cidade);
+		optionalUser = Optional.of(user);
 	}
 }

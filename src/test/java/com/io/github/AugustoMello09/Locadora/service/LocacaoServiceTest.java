@@ -133,13 +133,11 @@ public class LocacaoServiceTest {
 		Long idFilme = ID;
 		when(userRepository.findById(anyLong())).thenReturn(optionalUser);
 		when(filmeRepository.findById(anyLong())).thenReturn(optionalFilme);
-		Locacao locacao = new Locacao();
 		when(repository.save(any(Locacao.class))).thenReturn(locacao);
-		LocacaoDTO response = service.create(idUser, idFilme, locacaoDTO);
+		LocacaoDTO response = service.create(locacaoDTO);
 		verify(userRepository, times(1)).findById(idUser);
 		verify(filmeRepository, times(1)).findById(idFilme);
 		verify(repository, times(1)).save(any(Locacao.class));
-		verify(filmeRepository, times(1)).save(filme);
 		Assertions.assertNotNull(response);
 		assertEquals(LocacaoDTO.class, response.getClass());
 		assertEquals(ID, response.getId());
@@ -160,45 +158,16 @@ public class LocacaoServiceTest {
 	}
 
 	@Test
-	public void testCreateLocacao_UserNaoEncontrado_ExceptionThrown() {
-		Long idUser = ID;
-		Long idFilme = ID;
-		when(userRepository.findById(anyLong())).thenReturn(Optional.empty());
-		assertThrows(ObjectNotFoundException.class, () -> service.create(idUser, idFilme, locacaoDTO));
-		verify(userRepository, times(1)).findById(idUser);
-		verify(filmeRepository, never()).findById(anyLong());
-		verify(repository, never()).save(any(Locacao.class));
-		verify(filmeRepository, never()).save(any(Filme.class));
-	}
-
-	@Test
 	public void testCreateLocacao_FilmeNaoEncontrado_ExceptionThrown() {
 		Long idUser = ID;
 		Long idFilme = ID;
 		when(userRepository.findById(anyLong())).thenReturn(optionalUser);
 		when(filmeRepository.findById(anyLong())).thenReturn(Optional.empty());
-		assertThrows(ObjectNotFoundException.class, () -> service.create(idUser, idFilme, locacaoDTO));
+		assertThrows(ObjectNotFoundException.class, () -> service.create(locacaoDTO));
 		verify(userRepository, times(1)).findById(idUser);
 		verify(filmeRepository, times(1)).findById(idFilme);
 		verify(repository, never()).save(any(Locacao.class));
 		verify(filmeRepository, never()).save(any(Filme.class));
-	}
-
-	@Test
-	public void testCreateLocacao_QuantidadeMaiorQueEstoque_ExceptionThrown() {
-		Long idUser = 1L;
-		Long idFilme = 1L;
-		locacaoDTO.setQtd(10);
-		User user = new User();
-		when(userRepository.findById(idUser)).thenReturn(Optional.of(user));
-		Filme filme = new Filme();
-		Estoque estoque = new Estoque();
-		estoque.setQuantidade(5);
-		filme.setEstoque(estoque);
-		when(filmeRepository.findById(idFilme)).thenReturn(Optional.of(filme));
-		assertThrows(DataIntegratyViolationException.class, () -> {
-			service.create(idUser, idFilme, locacaoDTO);
-		});
 	}
 
 	@Test
@@ -229,7 +198,25 @@ public class LocacaoServiceTest {
 			service.devolver(idLocacao, dto);
 		});
 	}
-
+	
+    @Test
+	public void testDevolver_QuantidadeDevolvidaMaiorQueAlugada() {
+	        Long idLocacao = 1L;
+	        LocacaoDTO dto = new LocacaoDTO();
+	        dto.setQtd(5);
+	        Locacao locacao = new Locacao();
+	        locacao.setId(idLocacao);
+	        locacao.setQtd(3); 
+	        Filme filme = new Filme();
+	        Estoque estoque = new Estoque();
+	        estoque.setQuantidade(10);
+	        filme.setEstoque(estoque);
+	        locacao.setFilme(filme);
+	        when(repository.findById(idLocacao)).thenReturn(Optional.of(locacao));
+	        assertThrows(DataIntegratyViolationException.class, () -> service.devolver(idLocacao, dto));
+	        verify(estoqueRepository, never()).save(any());
+	}
+	
 	private void startLocacao() {
 		categoria = new Categoria(ID, NOME);
 		estoque = new Estoque(ID, QUANTIDADE, UNDEFINED);
@@ -237,10 +224,12 @@ public class LocacaoServiceTest {
 		filme = new Filme(ID, NOME, DESCRIÇAO, NOME, PRESO, categoria, estoque);
 		locacao = new Locacao(ID, QUANTIDADE, null, user, filme, BOLETO);
 		filmeDTO = new FilmeDTO(ID, NOME, DESCRIÇAO, NOME, PRESO, null, null);
-		userDTO = new UserDTO(ID, DESCRIÇAO, EMAIL, CPF, null, null);
+		userDTO = new UserDTO(ID, DESCRIÇAO, EMAIL, CPF, null);
 		locacaoDTO = new LocacaoDTO(ID, QUANTIDADE, BOLETO, null, null, null, userDTO, filmeDTO, null);
 		optionalFilme = Optional.of(filme);
 		optionalUser = Optional.of(user);
 		optionalLocacao = Optional.of(locacao);
 	}
+	
+	
 }

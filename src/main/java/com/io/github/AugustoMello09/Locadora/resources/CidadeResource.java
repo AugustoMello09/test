@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
@@ -33,9 +32,8 @@ public class CidadeResource {
 	}
 	
 	@PostMapping
-	public ResponseEntity<CidadeDTO> create(@RequestParam(value = "estado", defaultValue = "0") 
-	Long idEstado,@Valid @RequestBody CidadeDTO cidDto){
-		CidadeDTO newDto = service.create(cidDto, idEstado);
+	public ResponseEntity<CidadeDTO> create(@Valid @RequestBody CidadeDTO cidDto){
+		CidadeDTO newDto = service.create(cidDto);
 		URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
 				.buildAndExpand(newDto.getId()).toUri();
 		return ResponseEntity.created(uri).body(newDto);

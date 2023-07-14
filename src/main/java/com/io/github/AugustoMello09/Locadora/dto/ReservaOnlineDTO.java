@@ -30,9 +30,10 @@ public class ReservaOnlineDTO implements Serializable {
 	
 	public ReservaOnlineDTO(ReservaOnline entity) {
 		this.id = entity.getId();
-		this.qtdReservada = entity.getQtdReservada();
-		this.dataReserva = entity.getDataReserva();
-		this.statusReserva = entity.getStatus();
+        this.qtdReservada = entity.getQtdReservada();
+        this.dataReserva = entity.getDataReserva();
+        this.statusReserva = entity.getStatus();
+      
 	}
 
 }		

@@ -17,7 +17,11 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
+import com.io.github.AugustoMello09.Locadora.dto.EstoqueDTO;
 import com.io.github.AugustoMello09.Locadora.dto.ReservaDTO;
+import com.io.github.AugustoMello09.Locadora.dto.ReservaDTOInsert;
+import com.io.github.AugustoMello09.Locadora.dto.UserDTO;
+import com.io.github.AugustoMello09.Locadora.entities.enums.StatusEstoque;
 import com.io.github.AugustoMello09.Locadora.entities.enums.StatusReserva;
 import com.io.github.AugustoMello09.Locadora.repositories.ReservaRepository;
 import com.io.github.AugustoMello09.Locadora.resources.ReservaResource;
@@ -25,6 +29,7 @@ import com.io.github.AugustoMello09.Locadora.service.ReservaService;
 
 @SpringBootTest
 public class ReservaResourceTest {
+
 	private static final LocalDate DATA = LocalDate.now();
 
 	private static final StatusReserva ATIVA = StatusReserva.ATIVA;
@@ -43,6 +48,9 @@ public class ReservaResourceTest {
 	private ReservaResource resource;
 
 	private ReservaDTO reservaDTO;
+	private ReservaDTOInsert reservaDTOInsert;
+	private UserDTO userDTO;
+	private EstoqueDTO estoqueDTO;
 
 	@BeforeEach
 	void setUp() {
@@ -67,17 +75,15 @@ public class ReservaResourceTest {
 
 	@Test
 	void whenFindAllThenReturnSuccess() {
-		Long idEstoque = ID;
-		Long idUser = ID;
-		when(service.create(idUser, idEstoque, reservaDTO)).thenReturn(reservaDTO);
-		ResponseEntity<ReservaDTO> response = resource.create(idUser, idEstoque, reservaDTO);
+		when(service.create(reservaDTOInsert)).thenReturn(reservaDTO);
+		ResponseEntity<ReservaDTO> response = resource.create(reservaDTOInsert);
 		assertNotNull(response);
 		assertEquals(HttpStatus.CREATED, response.getStatusCode());
 		assertEquals(ID, response.getBody().getId());
 		assertEquals(QUANTIDADE, response.getBody().getQtdReservada());
 		assertEquals(DATA, response.getBody().getDataReserva());
 		assertEquals(ATIVA, response.getBody().getStatusReserva());
-		verify(service).create(idUser, idEstoque, reservaDTO);
+		verify(service).create(reservaDTOInsert);
 	}
 
 	@Test
@@ -90,5 +96,9 @@ public class ReservaResourceTest {
 
 	private void startReserva() {
 		reservaDTO = new ReservaDTO(ID, QUANTIDADE, ATIVA, DATA);
+		estoqueDTO = new EstoqueDTO(ID, QUANTIDADE, StatusEstoque.DISPONIVEL, null, null, QUANTIDADE, QUANTIDADE, QUANTIDADE);
+		userDTO = new UserDTO(ID, "oi", "oi", "oi", null);
+		reservaDTOInsert = new ReservaDTOInsert(userDTO, estoqueDTO);
 	}
+	
 }

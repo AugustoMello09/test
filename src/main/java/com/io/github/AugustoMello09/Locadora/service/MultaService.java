@@ -23,76 +23,86 @@ import com.io.github.AugustoMello09.Locadora.repositories.PagamentoRepository;
 
 @Service
 public class MultaService {
-	
+
 	@Autowired
 	private MultaRepository repository;
-	
+
 	@Autowired
 	private PagamentoRepository pagamentoRepository;
-	
+
 	@Transactional
 	@PreAuthorize("hasAnyRole('ADMIN','OPERATOR')")
 	public MultaDTO findById(Long id) {
 		Optional<Multa> obj = repository.findById(id);
-		Multa entity = obj.orElseThrow(()-> new ObjectNotFoundException("Multa não encontrada"));
+		Multa entity = obj.orElseThrow(() -> new ObjectNotFoundException("Multa não encontrada"));
 		return new MultaDTO(entity);
 	}
-	
+
 	@Transactional
 	@PreAuthorize("hasAnyRole('ADMIN','OPERATOR')")
-	public void pagarMultaBoleto(Long multaId, PagamentoComBoletoDTO pagamentoDTO) {
-		Optional<Multa> multa = repository.findById(multaId);
-	    if (multa.isPresent() && multa.get().getValor() > 0) {
-	        PagamentoComBoleto pagamento = new PagamentoComBoleto();
-	        pagamento.setDataVencimento(LocalDateTime.now().plusDays(30));
-			pagamento.setDataGerada(LocalDateTime.now());
-			pagamento.setDataPagamento(LocalDateTime.now());
-	        pagamento.setformaPagamento(FormaPagamento.BOLETO);
-	        pagamento.setValor(pagamentoDTO.getValor());
-	        pagamento.setValor(multa.get().getValor());
-			pagamento.setMulta(multa.get());
-	        pagamentoRepository.save(pagamento);
-	    } else {
-	        throw new ObjectNotFoundException("Multa não encontrada");
-	    }
-		
+	public void pagarMultaCartao(PagamentoComCartaoDTO pagamentoDTO) {
+		MultaDTO multaDTO = pagamentoDTO.getMulta();
+		Long multaId = multaDTO.getId();
+		if (multaId != null) {
+			Optional<Multa> multa = repository.findById(multaId);
+			if (multa.isPresent() && multa.get().getValor() > 0) {
+				PagamentoComCartao pagamento = new PagamentoComCartao();
+				pagamento.setNumeroParcelas(pagamentoDTO.getNumeroParcelas());
+				pagamento.setformaPagamento(FormaPagamento.CARTAO);
+				pagamento.setValor(pagamentoDTO.getValor());
+				pagamento.setValor(multa.get().getValor());
+				pagamento.setMulta(multa.get());
+				pagamentoRepository.save(pagamento);
+			} else {
+				throw new ObjectNotFoundException("Multa não encontrada");
+			}
+		}
 	}
-	
+
 	@Transactional
 	@PreAuthorize("hasAnyRole('ADMIN','OPERATOR')")
-	public void pagarMultaCartao(Long multaId, PagamentoComCartaoDTO pagamentoDTO) {
-		Optional<Multa> multa = repository.findById(multaId);
-	    if (multa.isPresent() && multa.get().getValor() > 0) {
-	        PagamentoComCartao pagamento = new PagamentoComCartao();
-	        pagamento.setNumeroParcelas(pagamentoDTO.getNumeroParcelas());
-	        pagamento.setformaPagamento(FormaPagamento.CARTAO);
-	        pagamento.setValor(pagamentoDTO.getValor());
-	        pagamento.setValor(multa.get().getValor());
-			pagamento.setMulta(multa.get());
-	        pagamentoRepository.save(pagamento);
-	    } else {
-	        throw new ObjectNotFoundException("Multa não encontrada");
-	    }
-		
+	public void pagarMultaPix(PagamentoComPixDTO pagamentoDTO) {
+		MultaDTO multaDTO = pagamentoDTO.getMulta();
+		Long multaId = multaDTO.getId();
+		if (multaId != null) {
+			Optional<Multa> multa = repository.findById(multaId);
+			if (multa.isPresent() && multa.get().getValor() > 0) {
+				PagamentoComPix pagamento = new PagamentoComPix();
+				pagamento.setDataPagamento(LocalDateTime.now());
+				pagamento.setformaPagamento(FormaPagamento.PIX);
+				pagamento.setValor(pagamentoDTO.getValor());
+				pagamento.setValor(multa.get().getValor());
+				pagamento.setMulta(multa.get());
+				pagamentoRepository.save(pagamento);
+			} else {
+				throw new ObjectNotFoundException("Multa não encontrada");
+			}
+		}
+
 	}
-	
+
 	@Transactional
 	@PreAuthorize("hasAnyRole('ADMIN','OPERATOR')")
-	public void pagarMultaPix(Long multaId, PagamentoComPixDTO pagamentoDTO) {
-		Optional<Multa> multa = repository.findById(multaId);
-	    if (multa.isPresent() && multa.get().getValor() > 0) {
-	        PagamentoComPix pagamento = new PagamentoComPix();
-			pagamento.setDataPagamento(LocalDateTime.now());
-	        pagamento.setformaPagamento(FormaPagamento.PIX);
-	        pagamento.setValor(pagamentoDTO.getValor());
-	        pagamento.setValor(multa.get().getValor());
-			pagamento.setMulta(multa.get());
-	        pagamentoRepository.save(pagamento);
-	    } else {
-	        throw new ObjectNotFoundException("Multa não encontrada");
-	    }
-		
+	public void pagarMultaBoleto(PagamentoComBoletoDTO pagamentoDTO) {
+		MultaDTO multaDTO = pagamentoDTO.getMulta();
+		Long multaId = multaDTO.getId();
+		if (multaId != null) {
+			Optional<Multa> multa = repository.findById(multaId);
+			if (multa.isPresent() && multa.get().getValor() > 0) {
+				PagamentoComBoleto pagamento = new PagamentoComBoleto();
+				pagamento.setDataVencimento(LocalDateTime.now().plusDays(30));
+				pagamento.setDataGerada(LocalDateTime.now());
+				pagamento.setDataPagamento(LocalDateTime.now());
+				pagamento.setformaPagamento(FormaPagamento.BOLETO);
+				pagamento.setValor(pagamentoDTO.getValor());
+				pagamento.setValor(multa.get().getValor());
+				pagamento.setMulta(multa.get());
+				pagamentoRepository.save(pagamento);
+			} else {
+				throw new ObjectNotFoundException("Multa não encontrada");
+			}
+		}
+
 	}
-	
-	
+
 }

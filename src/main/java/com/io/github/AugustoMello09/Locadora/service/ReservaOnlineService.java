@@ -9,7 +9,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.io.github.AugustoMello09.Locadora.Services.exception.DataIntegratyViolationException;
 import com.io.github.AugustoMello09.Locadora.Services.exception.ObjectNotFoundException;
+import com.io.github.AugustoMello09.Locadora.dto.EstoqueDTO;
 import com.io.github.AugustoMello09.Locadora.dto.ReservaOnlineDTO;
+import com.io.github.AugustoMello09.Locadora.dto.ReservaOnlineDTOInsert;
 import com.io.github.AugustoMello09.Locadora.entities.enums.StatusReserva;
 import com.io.github.AugustoMello09.Locadora.entity.Estoque;
 import com.io.github.AugustoMello09.Locadora.entity.ReservaOnline;
@@ -29,7 +31,7 @@ public class ReservaOnlineService {
 
 	@Autowired
 	private EstoqueRepository estoqueRepository;
-
+	
 	@Transactional
 	@PreAuthorize("hasAnyRole('ADMIN','OPERATOR')")
 	public ReservaOnlineDTO findReservaOnlineById(Long id) {
@@ -50,22 +52,30 @@ public class ReservaOnlineService {
 
 	@Transactional
 	@PreAuthorize("hasAnyRole('ADMIN','OPERATOR')")
-	public ReservaOnlineDTO create(Long idUser, Long idEstoque, ReservaOnlineDTO objDto) {
-		User user = userRepository.findById(idUser)
-				.orElseThrow(() -> new ObjectNotFoundException("Usuário não encontrado"));
-		Estoque estoque = estoqueRepository.findById(idEstoque)
-				.orElseThrow(() -> new ObjectNotFoundException("Estoque não encontrado"));
+	public ReservaOnlineDTO create(ReservaOnlineDTOInsert objDto) {
 		ReservaOnline entity = new ReservaOnline();
 		entity.setId(objDto.getId());
 		entity.setQtdReservada(objDto.getQtdReservada());
 		entity.setDataReserva(objDto.getDataReserva());
 		entity.setStatus(StatusReserva.ATIVA);
-		entity.setUser(user);
-	    if (entity.getQtdReservada() > estoque.getQuantidade()) {
-	        throw new DataIntegratyViolationException("Quantidade solicitada maior do que a disponível no estoque");
-	    }
-		entity.setEstoque(estoque);
-		repository.save(entity);
+		Long userId = objDto.getUser().getId();
+		if (userId != null) {
+			User user = userRepository.findById(userId).orElseThrow(
+					()-> new ObjectNotFoundException("Usuário não encontrado"));
+			entity.setUser(user);
+		}
+		EstoqueDTO estoqueDTO = objDto.getEstoque();
+		Long estoqueId = estoqueDTO.getId();
+		if (estoqueId != null) {
+			Estoque estoque = estoqueRepository.findById(estoqueId)
+					.orElseThrow(
+							()-> new ObjectNotFoundException("Estoque não encontrado"));
+			if (entity.getQtdReservada() > estoque.getQuantidade()) {
+		        throw new DataIntegratyViolationException("Quantidade solicitada maior do que a disponível no estoque");
+		    }
+			entity.setEstoque(estoque);
+			repository.save(entity);
+		}
 		return new ReservaOnlineDTO(entity);
 	}
 

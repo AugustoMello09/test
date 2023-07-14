@@ -32,16 +32,19 @@ public class CidadeService {
 		Cidade entity = obj.orElseThrow(() -> new ObjectNotFoundException("Cidade Não encontrada"));
 		return new CidadeDTO(entity);
 	}
-
+	
 	@Transactional
 	@PreAuthorize("hasAnyRole('ADMIN','OPERATOR')")
-	public CidadeDTO create(CidadeDTO cidDto, Long idEstado) {
+	public CidadeDTO create(CidadeDTO cidDto) {
 		Cidade cidade = new Cidade();
 		cidade.setId(cidDto.getId());
 		cidade.setName(cidDto.getName());
-		Estado estado = estadoRepository.findById(idEstado)
-				.orElseThrow(() -> new ObjectNotFoundException("Estado Não encontrado"));
-		cidade.setEstado(estado);
+		Long estadoId = cidDto.getEstadoId().getId();
+		if (estadoId != null) {
+			Estado estado = estadoRepository.findById(estadoId)
+					.orElseThrow(() -> new ObjectNotFoundException("Estado Não encontrado"));
+			cidade.setEstado(estado);
+		}
 		repository.save(cidade);
 		return new CidadeDTO(cidade);
 	}
@@ -55,4 +58,6 @@ public class CidadeService {
 			throw new DataIntegratyViolationException("Não pode deletar cidades associadas a estado");
 		}
 	}
+
+	
 }

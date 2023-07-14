@@ -2,6 +2,7 @@ package com.io.github.AugustoMello09.Locadora.resource;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -18,6 +19,7 @@ import org.springframework.http.ResponseEntity;
 import com.io.github.AugustoMello09.Locadora.dto.CidadeDTO;
 import com.io.github.AugustoMello09.Locadora.dto.EnderecoDTO;
 import com.io.github.AugustoMello09.Locadora.dto.EstadoDTO;
+import com.io.github.AugustoMello09.Locadora.dto.UserDTO;
 import com.io.github.AugustoMello09.Locadora.resources.EnderecoResource;
 import com.io.github.AugustoMello09.Locadora.service.EnderecoService;
 
@@ -43,6 +45,7 @@ public class EnderecoResourceTest {
 	private EstadoDTO estadoDTO;
 	private CidadeDTO cidadeDTO;
 	private EnderecoDTO enderecoDTO;
+	private UserDTO userDTO;
 
 	@Mock
 	private EnderecoService service;
@@ -74,17 +77,15 @@ public class EnderecoResourceTest {
 		assertNotNull(response.getBody().getCidade());
 		assertEquals(ID, response.getBody().getCidade().getId());
 		assertEquals(CIDADE, response.getBody().getCidade().getName());
-		assertNotNull(response.getBody().getCidade().getEstado());
-		assertEquals(ID, response.getBody().getCidade().getEstado().getId());
-		assertEquals(ESTADO, response.getBody().getCidade().getEstado().getName());
+		assertNotNull(response.getBody().getCidade().getEstadoId());
+		assertEquals(ID, response.getBody().getCidade().getEstadoId().getId());
+		assertEquals(ESTADO, response.getBody().getCidade().getEstadoId().getName());
 	}
 
 	@Test
 	public void testCreate() {
-		Long cidadeId = ID;
-		Long userId= ID;
-		when(service.create(enderecoDTO, userId, cidadeId)).thenReturn(enderecoDTO);
-		ResponseEntity<EnderecoDTO> response = resource.create(userId, cidadeId, enderecoDTO);
+		when(service.create(any(EnderecoDTO.class))).thenReturn(enderecoDTO);
+		ResponseEntity<EnderecoDTO> response = resource.create(enderecoDTO);
 		assertNotNull(response);
 		assertNotNull(response.getBody());
 		assertEquals(HttpStatus.CREATED, response.getStatusCode());
@@ -99,15 +100,18 @@ public class EnderecoResourceTest {
 		assertNotNull(response.getBody().getCidade());
 		assertEquals(ID, response.getBody().getCidade().getId());
 		assertEquals(CIDADE, response.getBody().getCidade().getName());
-		assertNotNull(response.getBody().getCidade().getEstado());
-		assertEquals(ID, response.getBody().getCidade().getEstado().getId());
-		assertEquals(ESTADO, response.getBody().getCidade().getEstado().getName());
-		verify(service).create(enderecoDTO, userId, cidadeId);
+		assertNotNull(response.getBody().getCidade().getEstadoId());
+		assertEquals(ID, response.getBody().getCidade().getEstadoId().getId());
+		assertEquals(ESTADO, response.getBody().getCidade().getEstadoId().getName());
+		verify(service).create(enderecoDTO);
 	}
 
 	private void startEndereco() {
 		estadoDTO = new EstadoDTO(ID, ESTADO);
 		cidadeDTO = new CidadeDTO(ID, CIDADE, estadoDTO);
-		enderecoDTO = new EnderecoDTO(ID, RUA, NUMERO, COMPLEMENTO, BAIRRO, CEP, cidadeDTO);
+		enderecoDTO = new EnderecoDTO(ID, RUA, NUMERO, COMPLEMENTO, BAIRRO, CEP, cidadeDTO, userDTO);
+		userDTO = new UserDTO(ID, "oi", "oi", "oi", null);
+		
 	}
+
 }

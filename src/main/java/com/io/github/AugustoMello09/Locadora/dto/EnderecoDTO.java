@@ -23,35 +23,37 @@ public class EnderecoDTO implements Serializable {
 	@NotBlank(message = "Campo obrigatório")
 	private String logradouro;
 	
-	@Size(min = 1, max = 10, message = "Deve ter entre 1 a 10 caracteres")
+	@Size(max = 5, message = "Deve ter no máximo 5 caracteres")
 	@NotBlank(message = "Campo obrigatório")
 	private String numero;
 	
 	@Size(min = 2, max = 24, message = "Deve ter entre 2 a 24 caracteres")
-	@NotBlank(message = "Campo obrigatório")
 	private String complemento;
 	
 	@Size(min = 2, max = 24, message = "Deve ter entre 2 a 24 caracteres")
 	@NotBlank(message = "Campo obrigatório")
 	private String bairro;
 	
-	@Size(min = 2, max = 24, message = "Deve ter entre 2 a 24 caracteres")
+	@Size(max = 9, message = "Deve ter no máximo 9 caracteres")
 	@NotBlank(message = "Campo obrigatório")
 	private String cep;
 	
 	private CidadeDTO cidade;
+	private UserDTO user;
 	
 	public EnderecoDTO() {
 	}
 	
 	public EnderecoDTO(Endereco entity) {
-		this.id = entity.getId();
-		this.logradouro = entity.getLogradouro();
-		this.numero = entity.getNumero();
-		this.complemento = entity.getComplemento();
-		this.bairro = entity.getBairro();
-		this.cep = entity.getCep();
-		this.cidade = new CidadeDTO(entity.getCidade());
+		id = entity.getId();
+		logradouro = entity.getLogradouro();
+		numero = entity.getNumero();
+		complemento = entity.getComplemento();
+		bairro = entity.getBairro();
+		cep = entity.getCep();
+		cidade = new CidadeDTO(entity.getCidade());
+		user = new UserDTO(entity.getUser());
+
 	}
 
 }

@@ -17,7 +17,11 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
+import com.io.github.AugustoMello09.Locadora.dto.EstoqueDTO;
 import com.io.github.AugustoMello09.Locadora.dto.ReservaOnlineDTO;
+import com.io.github.AugustoMello09.Locadora.dto.ReservaOnlineDTOInsert;
+import com.io.github.AugustoMello09.Locadora.dto.UserDTO;
+import com.io.github.AugustoMello09.Locadora.entities.enums.StatusEstoque;
 import com.io.github.AugustoMello09.Locadora.entities.enums.StatusReserva;
 import com.io.github.AugustoMello09.Locadora.repositories.ReservaOnlineRepository;
 import com.io.github.AugustoMello09.Locadora.resources.ReservaOnlineResource;
@@ -44,6 +48,9 @@ public class ReservaOnlineResourceTest {
 	private ReservaOnlineResource resource;
 
 	private ReservaOnlineDTO reservaOnlineDTO;
+	private ReservaOnlineDTOInsert reservaOnlineDTOInsert;
+	private EstoqueDTO estoqueDTO;
+	private UserDTO userDTO;
 
 	@BeforeEach
 	void setUp() {
@@ -68,17 +75,15 @@ public class ReservaOnlineResourceTest {
 
 	@Test
 	void whenFindAllThenReturnSuccess() {
-		Long idEstoque = ID;
-		Long idUser = ID;
-		when(service.create(idUser, idEstoque, reservaOnlineDTO)).thenReturn(reservaOnlineDTO);
-		ResponseEntity<ReservaOnlineDTO> response = resource.create(idUser, idEstoque, reservaOnlineDTO);
+		when(service.create(reservaOnlineDTOInsert)).thenReturn(reservaOnlineDTO);
+		ResponseEntity<ReservaOnlineDTO> response = resource.create(reservaOnlineDTOInsert);
 		assertNotNull(response);
 		assertEquals(HttpStatus.CREATED, response.getStatusCode());
 		assertEquals(ID, response.getBody().getId());
 		assertEquals(QUANTIDADE, response.getBody().getQtdReservada());
 		assertEquals(DATA, response.getBody().getDataReserva());
 		assertEquals(ATIVA, response.getBody().getStatusReserva());
-		verify(service).create(idUser, idEstoque, reservaOnlineDTO);
+		verify(service).create(reservaOnlineDTOInsert);
 	}
 
 	@Test
@@ -91,5 +96,9 @@ public class ReservaOnlineResourceTest {
 
 	private void startReservaOnline() {
 		reservaOnlineDTO = new ReservaOnlineDTO(ID, QUANTIDADE, DATA, ATIVA);
+		estoqueDTO = new EstoqueDTO(ID, QUANTIDADE, StatusEstoque.DISPONIVEL, null, null, QUANTIDADE, QUANTIDADE, QUANTIDADE);
+		userDTO = new UserDTO(ID, "oi", "oi", "oi", null);
+		reservaOnlineDTOInsert = new ReservaOnlineDTOInsert(userDTO, estoqueDTO);
 	}
+	
 }

@@ -37,6 +37,7 @@ public class CidadeServiceTest {
 
 	private Cidade cidade;
 	private EstadoDTO estadoDTO;
+	private Estado est;
 
 	private Optional<Cidade> optionalCidade;
 	private Optional<Estado> optionalEstado;
@@ -64,9 +65,9 @@ public class CidadeServiceTest {
 		assertEquals(CidadeDTO.class, response.getClass());
 		assertEquals(ID, response.getId());
 		assertEquals(CIDADE, response.getName());
-		assertNotNull(response.getEstado());
-		assertEquals(ID, response.getEstado().getId());
-		assertEquals(ESTADO, response.getEstado().getName());
+		assertNotNull(response.getEstadoId());
+		assertEquals(ID, response.getEstadoId().getId());
+		assertEquals(ESTADO, response.getEstadoId().getName());
 	}
 
 	@Test
@@ -80,16 +81,13 @@ public class CidadeServiceTest {
 		Long estadoId = ID;
 		when(estadoRepository.findById(anyLong())).thenReturn(optionalEstado);
 		CidadeDTO cidadeDTO = new CidadeDTO(ID, CIDADE, estadoDTO);
-		cidadeDTO.setEstado(estadoDTO);
+		cidadeDTO.setEstadoId(estadoDTO);
 		when(repository.save(any(Cidade.class))).thenReturn(cidade);
-		CidadeDTO resposta = service.create(cidadeDTO, estadoId);
+		CidadeDTO resposta = service.create(cidadeDTO);
 		assertNotNull(resposta);
 		assertEquals(CidadeDTO.class, resposta.getClass());
 		assertEquals(cidadeDTO.getId(), resposta.getId());
 		assertEquals(cidadeDTO.getName(), resposta.getName());
-		assertNotNull(resposta.getEstado());
-		assertEquals(estadoId, resposta.getEstado().getId());
-		assertEquals(ESTADO, resposta.getEstado().getName());
 		verify(estadoRepository).findById(estadoId);
 		verify(repository).save(any(Cidade.class));
 	}
@@ -112,9 +110,11 @@ public class CidadeServiceTest {
 	}
 
 	private void startCidade() {
-		Estado est = new Estado(ID, ESTADO);
+		estadoDTO = new EstadoDTO(ID, CIDADE);
+		est = new Estado(ID, ESTADO);
 		cidade = new Cidade(ID, CIDADE, est);
 		optionalCidade = Optional.of(cidade);
 		optionalEstado = Optional.of(est);
 	}
+	
 }

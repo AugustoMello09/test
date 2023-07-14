@@ -87,7 +87,7 @@ public class UserService implements UserDetailsService {
 		User entity = repository.findById(id).orElseThrow(() -> new ObjectNotFoundException("Usuário não encontrado"));
 		entity.setName(objDto.getName());
 		entity.setEmail(objDto.getEmail());
-		entity = repository.save(entity);
+		repository.save(entity);
 		return new UserDTO(entity);
 	}
 	

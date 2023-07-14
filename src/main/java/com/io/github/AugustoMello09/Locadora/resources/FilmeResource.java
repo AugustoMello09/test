@@ -36,19 +36,17 @@ public class FilmeResource {
 		return ResponseEntity.ok().body(obj);
 	}
 	
-	@GetMapping
+	/*@GetMapping
 	public ResponseEntity<List<FilmeDTO>> findAll(@RequestParam(value = "categoria", defaultValue = "0") Long idCategoria
 			){
 		List<Filme> list = service.findAll(idCategoria);
 		List<FilmeDTO> listDto = list.stream().map(obj -> new FilmeDTO(obj)).collect(Collectors.toList());
 		return ResponseEntity.ok().body(listDto);
-	}
+	}*/
 	
 	@PostMapping
-	public ResponseEntity<FilmeDTO> create(@RequestParam(value = "categoria", defaultValue = "0") Long idCategoria,
-			@RequestParam(value = "estoque", defaultValue = "0")Long idEstoque,
-			@Valid @RequestBody FilmeDTO fil){
-		FilmeDTO newObj = service.create(fil, idCategoria, idEstoque);
+	public ResponseEntity<FilmeDTO> create(@Valid @RequestBody FilmeDTO fil){
+		FilmeDTO newObj = service.create(fil);
 		URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(newObj.getId()).toUri();
 		return ResponseEntity.created(uri).body(newObj);
 	}

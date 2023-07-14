@@ -41,12 +41,12 @@ public class FilmeDTO implements Serializable {
 	public FilmeDTO() {}
 	
 	public FilmeDTO(Filme entity) {
-		this.id = entity.getId();
-		this.nome = entity.getNome();
-		this.descricao = entity.getDescricao();
-		this.diretor = entity.getDiretor();
-		this.valorAluguel = entity.getValorAluguel();
-		this.categoria = new CategoriaDTO(entity.getCategoria());
-		this.estoque = new EstoqueDTO(entity.getEstoque());
+		id = entity.getId();
+		nome = entity.getNome();
+		descricao = entity.getDescricao();
+		diretor = entity.getDiretor();
+		valorAluguel = entity.getValorAluguel();
+		categoria = new CategoriaDTO(entity.getCategoria());
+		estoque = new EstoqueDTO(entity.getEstoque());
 	}
 }

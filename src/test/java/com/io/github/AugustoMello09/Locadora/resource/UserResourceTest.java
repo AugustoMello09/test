@@ -128,6 +128,7 @@ public class UserResourceTest {
 	private void startUser() {
 		userInsertDTO = new UserInsertDTO("132");
 		userDTOUpdate = new UserDTOUpdate(NOME, EMAIL);
-		userDTO = new UserDTO(ID, NOME, EMAIL, CPF, null, null);
+		userDTO = new UserDTO(ID, NOME, EMAIL, CPF, null);
 	}
+	
 }

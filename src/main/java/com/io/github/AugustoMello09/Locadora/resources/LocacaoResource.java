@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
@@ -32,10 +31,9 @@ public class LocacaoResource {
 	}
 	
 	@PostMapping
-    public ResponseEntity<LocacaoDTO> create(@RequestParam(value = "user", defaultValue = "0") Long idUser,
-            @RequestParam(value = "filme", defaultValue = "0")Long idFilme,@Valid @RequestBody LocacaoDTO obj){
-        LocacaoDTO newObj = service.create(idUser, idFilme, obj);
-        URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/locacao/{id}").buildAndExpand(newObj.getId())
+	public ResponseEntity<LocacaoDTO> create(@Valid @RequestBody LocacaoDTO obj){
+        LocacaoDTO newObj = service.create(obj);
+        URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(newObj.getId())
                 .toUri();
         return ResponseEntity.created(uri).body(newObj);
     }
@@ -45,7 +43,5 @@ public class LocacaoResource {
 			@Valid @RequestBody LocacaoDTO dto){
 		service.devolver(idLocacao, dto);
 		return ResponseEntity.ok().build();
-	}
-	
-	
+	}	
 }

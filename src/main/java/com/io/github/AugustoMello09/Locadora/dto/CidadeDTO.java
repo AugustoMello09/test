@@ -23,13 +23,13 @@ public class CidadeDTO implements Serializable {
 	@NotBlank(message = "Campo obrigatório")
 	private String name;
 	
-	private EstadoDTO estado;
+	private EstadoDTO estadoId;
 	
 	public CidadeDTO() {}
 
 	public CidadeDTO(Cidade entity) {
 		this.id = entity.getId();
 		this.name = entity.getName();
-		this.estado = new EstadoDTO(entity.getEstado());
+		this.estadoId = new EstadoDTO(entity.getEstado());
 	}
 }

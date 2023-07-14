@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -24,9 +25,6 @@ import com.io.github.AugustoMello09.Locadora.dto.PagamentoComBoletoDTO;
 import com.io.github.AugustoMello09.Locadora.dto.PagamentoComCartaoDTO;
 import com.io.github.AugustoMello09.Locadora.dto.PagamentoComPixDTO;
 import com.io.github.AugustoMello09.Locadora.entity.Multa;
-import com.io.github.AugustoMello09.Locadora.entity.PagamentoComBoleto;
-import com.io.github.AugustoMello09.Locadora.entity.PagamentoComCartao;
-import com.io.github.AugustoMello09.Locadora.entity.PagamentoComPix;
 import com.io.github.AugustoMello09.Locadora.repositories.MultaRepository;
 import com.io.github.AugustoMello09.Locadora.repositories.PagamentoRepository;
 
@@ -48,14 +46,15 @@ public class MultaServiceTest {
 
 	private Optional<Multa> optionalMulta;
 	private Multa multa;
-
+	
 	@BeforeEach
 	void setUp() {
 		MockitoAnnotations.openMocks(this);
 		startMulta();
 	}
 
-	@Test
+	
+	@Test 
 	public void whenFindByIdThenReturnMultaDTO() {
 		when(repository.findById(anyLong())).thenReturn(optionalMulta);
 		MultaDTO response = service.findById(ID);
@@ -65,80 +64,96 @@ public class MultaServiceTest {
 		assertEquals(PRESO, response.getValor());
 	}
 
-	@Test
+	@Test 
 	public void whenFindByIdThenThrowObjectNotFoundException() {
 		when(repository.findById(anyLong())).thenReturn(Optional.empty());
 		assertThrows(ObjectNotFoundException.class, () -> service.findById(ID));
 	}
 
-	@Test
-	void pagarMultaBoleto_WithValidMultaIdAndPositiveValor_ShouldSavePagamento() {
-		Long multaId = ID;
-		PagamentoComBoletoDTO pagamentoDTO = new PagamentoComBoletoDTO();
-		pagamentoDTO.setValor(100.0);
-		Multa multa = new Multa();
-		multa.setId(multaId);
-		multa.setValor(150.0);
-		when(repository.findById(multaId)).thenReturn(Optional.of(multa));
-		service.pagarMultaBoleto(multaId, pagamentoDTO);
-		verify(pagamentoRepository, times(1)).save(any(PagamentoComBoleto.class));
-	}
+	 @Test
+	 public void testPagarMultaCartao_MultaExistente() {
+	        PagamentoComCartaoDTO pagamentoDTO = new PagamentoComCartaoDTO();
+	        pagamentoDTO.setValor(100.0);
+	        MultaDTO multaDTO = new MultaDTO();
+	        multaDTO.setId(1L);
+	        pagamentoDTO.setMulta(multaDTO);
+	        Multa multa = new Multa();
+	        multa.setId(1L);
+	        multa.setValor(50.0);
+	        when(repository.findById(1L)).thenReturn(Optional.of(multa));
+	        service.pagarMultaCartao(pagamentoDTO);
+	        verify(pagamentoRepository, times(1)).save(any());
+	  }
+	 
+	 @Test
+	 public void testPagarMultaCartao_MultaNaoEncontrada() {
+	        PagamentoComCartaoDTO pagamentoDTO = new PagamentoComCartaoDTO();
+	        pagamentoDTO.setValor(100.0);
+	        MultaDTO multaDTO = new MultaDTO();
+	        multaDTO.setId(1L);
+	        pagamentoDTO.setMulta(multaDTO);
+	        when(repository.findById(anyLong())).thenReturn(Optional.empty());
+	        assertThrows(ObjectNotFoundException.class, () -> service.pagarMultaCartao(pagamentoDTO));
+	        verify(pagamentoRepository, never()).save(any());
+	 }
+	 
+	 @Test
+	 public void testPagarMultaPix_MultaNaoEncontrada() {
+		 PagamentoComPixDTO pagamentoDTO = new PagamentoComPixDTO();
+		 pagamentoDTO.setValor(100.0);
+		 MultaDTO multaDTO = new MultaDTO();
+		 multaDTO.setId(1L);
+		 pagamentoDTO.setMulta(multaDTO);
+		 when(repository.findById(anyLong())).thenReturn(Optional.empty());
+		 assertThrows(ObjectNotFoundException.class, () -> service.pagarMultaPix(pagamentoDTO));
+		 verify(pagamentoRepository, never()).save(any());
+	 }
+	 
+	 @Test
+	 public void testPagarMultaBoleto_MultaNaoEncontrada() {
+		 PagamentoComBoletoDTO pagamentoDTO = new PagamentoComBoletoDTO();
+		 pagamentoDTO.setValor(100.0);
+		 MultaDTO multaDTO = new MultaDTO();
+		 multaDTO.setId(1L);
+		 pagamentoDTO.setMulta(multaDTO);
+		 when(repository.findById(anyLong())).thenReturn(Optional.empty());
+		 assertThrows(ObjectNotFoundException.class, () -> service.pagarMultaBoleto(pagamentoDTO));
+		 verify(pagamentoRepository, never()).save(any());
+	 }
+	 
+	  @Test
+	  public void testPagarMultaPix_MultaExistente() {
+	        PagamentoComPixDTO pagamentoDTO = new PagamentoComPixDTO();
+	        pagamentoDTO.setValor(100.0);
+	        MultaDTO multaDTO = new MultaDTO();
+	        multaDTO.setId(1L);
+	        pagamentoDTO.setMulta(multaDTO);
+	        Multa multa = new Multa();
+	        multa.setId(1L);
+	        multa.setValor(50.0);
+	        when(repository.findById(1L)).thenReturn(Optional.of(multa));
+	        service.pagarMultaPix(pagamentoDTO);
+	        verify(pagamentoRepository, times(1)).save(any());
+	    }
 
-	@Test
-	void pagarMultaCartao_WithInvalidMultaId_ShouldThrowObjectNotFoundException() {
-		Long multaId = ID;
-		PagamentoComCartaoDTO pagamentoDTO = new PagamentoComCartaoDTO();
-		pagamentoDTO.setValor(100.0);
-		when(repository.findById(multaId)).thenReturn(Optional.empty());
-		assertThrows(ObjectNotFoundException.class, () -> service.pagarMultaCartao(multaId, pagamentoDTO));
-	}
-
-	@Test
-	void pagarMultaCartao_WithValidMultaIdAndPositiveValor_ShouldSavePagamento() {
-		Long multaId = ID;
-		PagamentoComCartaoDTO pagamentoDTO = new PagamentoComCartaoDTO();
-		pagamentoDTO.setValor(100.0);
-		Multa multa = new Multa();
-		multa.setId(multaId);
-		multa.setValor(150.0);
-		when(repository.findById(multaId)).thenReturn(Optional.of(multa));
-		service.pagarMultaCartao(multaId, pagamentoDTO);
-		verify(pagamentoRepository, times(1)).save(any(PagamentoComCartao.class));
-	}
-
-	@Test
-	void pagarMultaPix_WithInvalidMultaId_ShouldThrowObjectNotFoundException() {
-		Long multaId = ID;
-		PagamentoComPixDTO pagamentoDTO = new PagamentoComPixDTO();
-		pagamentoDTO.setValor(100.0);
-		when(repository.findById(multaId)).thenReturn(Optional.empty());
-		assertThrows(ObjectNotFoundException.class, () -> service.pagarMultaPix(multaId, pagamentoDTO));
-	}
-
-	@Test
-	void pagarMultaPix_WithValidMultaIdAndPositiveValor_ShouldSavePagamento() {
-		Long multaId = ID;
-		PagamentoComPixDTO pagamentoDTO = new PagamentoComPixDTO();
-		pagamentoDTO.setValor(100.0);
-		Multa multa = new Multa();
-		multa.setId(multaId);
-		multa.setValor(150.0);
-		when(repository.findById(multaId)).thenReturn(Optional.of(multa));
-		service.pagarMultaPix(multaId, pagamentoDTO);
-		verify(pagamentoRepository, times(1)).save(any(PagamentoComPix.class));
-	}
-
-	@Test
-	void pagarMultaBoleto_WithInvalidMultaId_ShouldThrowObjectNotFoundException() {
-		Long multaId = ID;
-		PagamentoComBoletoDTO pagamentoDTO = new PagamentoComBoletoDTO();
-		pagamentoDTO.setValor(100.0);
-		when(repository.findById(multaId)).thenReturn(Optional.empty());
-		assertThrows(ObjectNotFoundException.class, () -> service.pagarMultaBoleto(multaId, pagamentoDTO));
-	}
+	    @Test
+	    public void testPagarMultaBoleto_MultaExistente() {
+	        PagamentoComBoletoDTO pagamentoDTO = new PagamentoComBoletoDTO();
+	        pagamentoDTO.setValor(100.0);
+	        MultaDTO multaDTO = new MultaDTO();
+	        multaDTO.setId(1L);
+	        pagamentoDTO.setMulta(multaDTO);
+	        Multa multa = new Multa();
+	        multa.setId(1L);
+	        multa.setValor(50.0);
+	        when(repository.findById(1L)).thenReturn(Optional.of(multa));
+	        service.pagarMultaBoleto(pagamentoDTO);
+	        verify(pagamentoRepository, times(1)).save(any());
+	    }
 
 	private void startMulta() {
 		multa = new Multa(ID, PRESO, null);
 		optionalMulta = Optional.of(multa);
 	}
+
 }

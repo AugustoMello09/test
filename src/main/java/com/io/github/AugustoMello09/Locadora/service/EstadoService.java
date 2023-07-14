@@ -1,5 +1,6 @@
 package com.io.github.AugustoMello09.Locadora.service;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,6 +47,13 @@ public class EstadoService {
 		} catch (DataIntegrityViolationException e) {
 			throw new DataIntegratyViolationException("Não pode deletar estados associados a cidades");
 		}
+	}
+	
+	@Transactional
+	@PreAuthorize("hasAnyRole('ADMIN','OPERATOR')")
+	public List<Estado> findAll() {
+		List<Estado> list = repository.findAll();
+		return list;	
 	}
 
 }
