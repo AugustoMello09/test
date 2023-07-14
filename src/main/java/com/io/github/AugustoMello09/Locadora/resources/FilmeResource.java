@@ -20,6 +20,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import com.io.github.AugustoMello09.Locadora.dto.FilmeDTO;
 import com.io.github.AugustoMello09.Locadora.dto.FilmeDTOUpdate;
+import com.io.github.AugustoMello09.Locadora.dto.FilmePagedDTO;
 import com.io.github.AugustoMello09.Locadora.entity.Filme;
 import com.io.github.AugustoMello09.Locadora.service.FilmeService;
 
@@ -36,13 +37,13 @@ public class FilmeResource {
 		return ResponseEntity.ok().body(obj);
 	}
 	
-	/*@GetMapping
-	public ResponseEntity<List<FilmeDTO>> findAll(@RequestParam(value = "categoria", defaultValue = "0") Long idCategoria
+	@GetMapping
+	public ResponseEntity<List<FilmePagedDTO>> findAll(@RequestParam(value = "categoria", defaultValue = "0") Long idCategoria
 			){
 		List<Filme> list = service.findAll(idCategoria);
-		List<FilmeDTO> listDto = list.stream().map(obj -> new FilmeDTO(obj)).collect(Collectors.toList());
+		List<FilmePagedDTO> listDto = list.stream().map(obj -> new FilmePagedDTO(obj)).collect(Collectors.toList());
 		return ResponseEntity.ok().body(listDto);
-	}*/
+	}
 	
 	@PostMapping
 	public ResponseEntity<FilmeDTO> create(@Valid @RequestBody FilmeDTO fil){

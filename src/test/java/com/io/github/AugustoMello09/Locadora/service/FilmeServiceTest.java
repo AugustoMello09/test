@@ -8,6 +8,7 @@ import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -107,7 +108,7 @@ public class FilmeServiceTest {
 		assertThrows(ObjectNotFoundException.class, () -> service.findById(ID));
 	}
 
-	/*@Test
+	@Test
 	void whenFindAllThenReturnAnListOfFilms() {
 		when(categoriaService.findById(ID)).thenReturn(categoriaDTO);
 		when(repository.findAllByCategory(ID)).thenReturn(List.of(filme));
@@ -116,18 +117,8 @@ public class FilmeServiceTest {
 		assertEquals(1, response.size());
 		assertEquals(Filme.class, response.get(INDEX).getClass());
 		assertEquals(ID, response.get(INDEX).getId());
-		assertEquals(NOME, response.get(INDEX).getNome());
-		assertEquals(DESCRIÇAO, response.get(INDEX).getDescricao());
-		assertEquals(NOME, response.get(INDEX).getDiretor());
-		assertEquals(PRESO, response.get(INDEX).getValorAluguel());
-		assertNotNull(response.get(INDEX).getCategoria());
-		assertEquals(ID, response.get(INDEX).getCategoria().getId());
-		assertEquals(NOME, response.get(INDEX).getCategoria().getNomeCategoria());
-		assertNotNull(response.get(INDEX).getEstoque());
-		assertEquals(ID, response.get(INDEX).getEstoque().getId());
-		assertEquals(QUANTIDADE, response.get(INDEX).getEstoque().getQuantidade());
-		assertEquals(UNDEFINED, response.get(INDEX).getEstoque().getStatus());
-	}*/
+		assertEquals(NOME, response.get(INDEX).getNome());	
+	}
 
 	@Test
 	void whenCreateFilmeThenReturnFilmeDTO() {
@@ -169,7 +160,7 @@ public class FilmeServiceTest {
 	}
 
 	private void startFilme() {
-	    filmeDTOUpdate = new FilmeDTOUpdate(NOME, DESCRIÇAO, NOME);
+		filmeDTOUpdate = new FilmeDTOUpdate(NOME, DESCRIÇAO, NOME);
 		categoria = new Categoria(ID, NOME);
 		estoque = new Estoque(ID, QUANTIDADE, UNDEFINED);
 		filme = new Filme(ID, NOME, DESCRIÇAO, NOME, PRESO, categoria, estoque);

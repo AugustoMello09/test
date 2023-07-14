@@ -24,6 +24,7 @@ import com.io.github.AugustoMello09.Locadora.dto.CategoriaDTO;
 import com.io.github.AugustoMello09.Locadora.dto.EstoqueDTO;
 import com.io.github.AugustoMello09.Locadora.dto.FilmeDTO;
 import com.io.github.AugustoMello09.Locadora.dto.FilmeDTOUpdate;
+import com.io.github.AugustoMello09.Locadora.dto.FilmePagedDTO;
 import com.io.github.AugustoMello09.Locadora.entities.enums.StatusEstoque;
 import com.io.github.AugustoMello09.Locadora.entity.Categoria;
 import com.io.github.AugustoMello09.Locadora.entity.Estoque;
@@ -50,6 +51,7 @@ public class FilmeResourceTest {
 	private EstoqueDTO estoqueDTO;
 	private Categoria categoria;
 	private Estoque estoque;
+	
 	
 	@Mock
 	private EstoqueRepository estoqueRepository;
@@ -97,19 +99,19 @@ public class FilmeResourceTest {
 		assertEquals(UNDEFINED, response.getBody().getEstoque().getStatus());
 	}
 
-	/*@Test
+	@Test
 	public void testFindAll() {
 		Long idCategoria = 1L;
 		List<Filme> filmes = Arrays.asList(new Filme(1L, "Nome 1", "Descrição 1", "Nome 1", 12.00, categoria, estoque),
 				new Filme(2L, "Nome 2", "Descrição 2", "Nome 2", 13.00, categoria, estoque));
 		when(service.findAll(idCategoria)).thenReturn(filmes);
-		ResponseEntity<List<FilmeDTO>> response = resource.findAll(idCategoria);
+		ResponseEntity<List<FilmePagedDTO>> response = resource.findAll(idCategoria);
 		assertNotNull(response);
 		assertNotNull(response.getBody());
 		assertEquals(HttpStatus.OK, response.getStatusCode());
 		assertEquals(ResponseEntity.class, response.getClass());
 		assertEquals(ArrayList.class, response.getBody().getClass());
-	}*/
+	}
 
 	@Test
 	public void testCreate() {
