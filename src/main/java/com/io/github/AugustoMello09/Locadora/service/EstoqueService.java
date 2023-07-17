@@ -11,7 +11,6 @@ import org.springframework.transaction.annotation.Transactional;
 import com.io.github.AugustoMello09.Locadora.Services.exception.DataIntegratyViolationException;
 import com.io.github.AugustoMello09.Locadora.Services.exception.ObjectNotFoundException;
 import com.io.github.AugustoMello09.Locadora.dto.EstoqueDTO;
-import com.io.github.AugustoMello09.Locadora.entities.enums.StatusEstoque;
 import com.io.github.AugustoMello09.Locadora.entity.Estoque;
 import com.io.github.AugustoMello09.Locadora.entity.Filme;
 import com.io.github.AugustoMello09.Locadora.repositories.EstoqueRepository;
@@ -40,7 +39,7 @@ public class EstoqueService {
 		Estoque entity = new Estoque();
 		entity.setId(est.getId());
 		entity.setQuantidade(est.getQuantidade());
-		entity.setStatus(StatusEstoque.UNDEFINED);
+		entity.setStatus(est.getStatus());
 		repository.save(entity);
 		return new EstoqueDTO(entity);
 	}
@@ -57,6 +56,7 @@ public class EstoqueService {
 		}
 		entity.setQuantidade(est.getQuantidade());
 		repository.save(entity);
+		entity.setQtd(entity.getQuantidade());
 		return new EstoqueDTO(entity);
 	}
 

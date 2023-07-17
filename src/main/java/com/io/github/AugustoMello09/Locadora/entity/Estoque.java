@@ -44,18 +44,18 @@ public class Estoque implements Serializable {
 		super();
 		this.id = id;
 		this.quantidade = quantidade;
-		this.status = (status == null) ? 3 : status.getCod();
+		this.status = status.getCod();
 	}
 
 	public void setQtd(int quantidade) {
 		this.quantidade = quantidade;
 		int quantidadeDisponivel = this.getQuantidadeFilmesDisponiveis();
-		if (quantidadeDisponivel >= 10) {
-			this.setStatus(StatusEstoque.DISPONIVEL);
-		} else if (quantidadeDisponivel > 2 && quantidadeDisponivel <= 9) {
-			this.setStatus(StatusEstoque.REPOSICAO);
+		if (quantidadeDisponivel >= 15) {
+			setStatus(StatusEstoque.DISPONIVEL);
+		} else if (quantidadeDisponivel >= 5 && quantidadeDisponivel < 15) {
+			setStatus(StatusEstoque.REPOSICAO);
 		} else {
-			this.setStatus(StatusEstoque.INDISPONIVEL);
+			setStatus(StatusEstoque.INDISPONIVEL);
 		}
 	}
 

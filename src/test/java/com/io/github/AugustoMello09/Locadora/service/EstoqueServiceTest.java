@@ -106,7 +106,7 @@ public class EstoqueServiceTest {
 	    assertEquals(EstoqueDTO.class, response.getClass());
 	    assertEquals(ID, response.getId());
 	    assertEquals(QUANTIDADE, response.getQuantidade());
-	    assertEquals(StatusEstoque.UNDEFINED, response.getStatus());
+	    assertEquals(StatusEstoque.DISPONIVEL, response.getStatus());
 	}
 	
 	 @Test
