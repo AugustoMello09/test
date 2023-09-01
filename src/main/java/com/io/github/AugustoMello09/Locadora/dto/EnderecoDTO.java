@@ -19,7 +19,7 @@ public class EnderecoDTO implements Serializable {
 	
 	private Long id;
 	
-	@Size(min = 3, max = 10, message = "Deve ter entre 3 a 10 caracteres")
+	@Size(min = 3, max = 45, message = "Deve ter entre 3 a 45 caracteres")
 	@NotBlank(message = "Campo obrigatório")
 	private String logradouro;
 	
@@ -27,10 +27,10 @@ public class EnderecoDTO implements Serializable {
 	@NotBlank(message = "Campo obrigatório")
 	private String numero;
 	
-	@Size(min = 2, max = 24, message = "Deve ter entre 2 a 24 caracteres")
+	@Size(max = 24, message = "Deve ter no máximo 24 caracteres")
 	private String complemento;
 	
-	@Size(min = 2, max = 24, message = "Deve ter entre 2 a 24 caracteres")
+	@Size(min = 2, max = 45, message = "Deve ter entre 2 a 45 caracteres")
 	@NotBlank(message = "Campo obrigatório")
 	private String bairro;
 	

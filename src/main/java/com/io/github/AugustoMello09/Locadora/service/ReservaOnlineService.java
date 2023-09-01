@@ -1,8 +1,11 @@
 package com.io.github.AugustoMello09.Locadora.service;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -31,13 +34,31 @@ public class ReservaOnlineService {
 
 	@Autowired
 	private EstoqueRepository estoqueRepository;
-	
+
+	@Autowired
+	private AuthService authService;
+
 	@Transactional
-	@PreAuthorize("hasAnyRole('ADMIN','OPERATOR')")
+	@PreAuthorize("hasAnyRole('ADMIN','OPERATOR')or @authService.authenticated().getId() == #id")
 	public ReservaOnlineDTO findReservaOnlineById(Long id) {
 		Optional<ReservaOnline> obj = repository.findById(id);
 		ReservaOnline entity = obj.orElseThrow(() -> new ObjectNotFoundException("ReservaOnline não encontrada"));
 		return new ReservaOnlineDTO(entity);
+	}
+	
+	@Transactional
+	@PreAuthorize("hasAnyRole('ADMIN')")
+	public List<ReservaOnline> findAll() {
+		List<ReservaOnline> lista = repository.findAll();
+		return lista;
+	}
+	
+	@Transactional
+	@PreAuthorize("hasAnyRole('ADMIN','OPERATOR')")
+	public Page<ReservaOnlineDTO> findAllPaged(Pageable pageable) {
+		Long authenticatedUserId = authService.authenticated().getId();
+		Page<ReservaOnline> list = repository.findByUser_Id(authenticatedUserId, pageable);
+		return list.map(x -> new ReservaOnlineDTO(x));
 	}
 
 	@Transactional
@@ -60,23 +81,24 @@ public class ReservaOnlineService {
 		entity.setStatus(StatusReserva.ATIVA);
 		Long userId = objDto.getUser().getId();
 		if (userId != null) {
-			User user = userRepository.findById(userId).orElseThrow(
-					()-> new ObjectNotFoundException("Usuário não encontrado"));
+			User user = userRepository.findById(userId)
+					.orElseThrow(() -> new ObjectNotFoundException("Usuário não encontrado"));
 			entity.setUser(user);
 		}
 		EstoqueDTO estoqueDTO = objDto.getEstoque();
 		Long estoqueId = estoqueDTO.getId();
 		if (estoqueId != null) {
 			Estoque estoque = estoqueRepository.findById(estoqueId)
-					.orElseThrow(
-							()-> new ObjectNotFoundException("Estoque não encontrado"));
+					.orElseThrow(() -> new ObjectNotFoundException("Estoque não encontrado"));
 			if (entity.getQtdReservada() > estoque.getQuantidade()) {
-		        throw new DataIntegratyViolationException("Quantidade solicitada maior do que a disponível no estoque");
-		    }
+				throw new DataIntegratyViolationException("Quantidade solicitada maior do que a disponível no estoque");
+			}
 			entity.setEstoque(estoque);
 			repository.save(entity);
 		}
 		return new ReservaOnlineDTO(entity);
 	}
+
+	
 
 }

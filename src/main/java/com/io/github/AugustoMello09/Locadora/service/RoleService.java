@@ -1,6 +1,8 @@
 package com.io.github.AugustoMello09.Locadora.service;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -38,6 +40,14 @@ public class RoleService {
 		return new RoleDTO(entity);
 	}
 	
+	@Transactional
+	@PreAuthorize("hasAnyRole('ADMIN')")
+	public List<RoleDTO> findAll() {
+		List<Role> entity = repository.findAll();
+		List<RoleDTO> listDto = entity.stream().map(x -> new RoleDTO(x)).collect(Collectors.toList());
+		return listDto;
+	}
+	
 	@PreAuthorize("hasAnyRole('ADMIN')")
 	public void delete(Long id) {
 		findById(id);
@@ -48,5 +58,6 @@ public class RoleService {
 		}
 
 	}
+
 
 }

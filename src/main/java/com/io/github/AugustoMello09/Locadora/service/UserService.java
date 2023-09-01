@@ -1,6 +1,8 @@
 package com.io.github.AugustoMello09.Locadora.service;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -18,6 +20,7 @@ import com.io.github.AugustoMello09.Locadora.Services.exception.DataIntegratyVio
 import com.io.github.AugustoMello09.Locadora.Services.exception.ObjectNotFoundException;
 import com.io.github.AugustoMello09.Locadora.dto.RoleDTO;
 import com.io.github.AugustoMello09.Locadora.dto.UserDTO;
+import com.io.github.AugustoMello09.Locadora.dto.UserDTOInfo;
 import com.io.github.AugustoMello09.Locadora.dto.UserDTOUpdate;
 import com.io.github.AugustoMello09.Locadora.dto.UserInsertDTO;
 import com.io.github.AugustoMello09.Locadora.dto.UserPagedDTO;
@@ -45,6 +48,7 @@ public class UserService implements UserDetailsService {
 	private AuthService authService;
 
 	@Transactional
+	@PreAuthorize("hasAnyRole('ADMIN','OPERATOR')")
 	public UserDTO findById(Long id) {
 		authService.validateSelfOrAdmin(id);
 		Optional<User> obj = repository.findById(id);
@@ -53,13 +57,23 @@ public class UserService implements UserDetailsService {
 	}
 
 	@Transactional
-	@PreAuthorize("hasAnyRole('ADMIN','OPERATOR')")
+	@PreAuthorize("hasAnyRole('ADMIN')")
 	public Page<UserPagedDTO> findAllPaged(Pageable pageable) {
 		Page<User> list = repository.findAll(pageable);
 		return list.map(x -> new UserPagedDTO(x));
 	}
+	
+	@Transactional
+	@PreAuthorize("hasAnyRole('ADMIN')")
+	public List<UserDTOInfo> findAllDrop() {
+		List<User> entity = repository.findAll();
+		List<UserDTOInfo> listDto = entity.stream().map(x -> new UserDTOInfo(x))
+				.collect(Collectors.toList());
+		return listDto;
+	}
 
 	@Transactional
+	@PreAuthorize("hasAnyRole('ADMIN','OPERATOR')")
 	public UserDTO create(UserInsertDTO objDto) {
 		User entity = new User();
 		copyToEntity(objDto, entity);
@@ -73,15 +87,14 @@ public class UserService implements UserDetailsService {
 		entity.setName(dto.getName());
 		entity.setCpf(dto.getCpf());
 		entity.setEmail(dto.getEmail());
-		entity.getEnderecos().clear();
 		for (RoleDTO roleDto : dto.getRoles()) {
 			Role role = roleRepository.findById(roleDto.getId()).get();
 			entity.getRoles().add(role);
 		}
-
 	}
-
+	
 	@Transactional
+	@PreAuthorize("hasAnyRole('ADMIN','OPERATOR')")
 	public UserDTO update(UserDTOUpdate objDto, Long id) {
 		authService.validateSelfOrAdmin(id);
 		User entity = repository.findById(id).orElseThrow(() -> new ObjectNotFoundException("Usuário não encontrado"));
@@ -89,6 +102,25 @@ public class UserService implements UserDetailsService {
 		entity.setEmail(objDto.getEmail());
 		repository.save(entity);
 		return new UserDTO(entity);
+	}
+	
+	@Transactional
+	@PreAuthorize("hasAnyRole('ADMIN')")
+	public UserDTO cargo(UserDTO fil, Long id) {
+		User entity = repository.findById(id)
+				.orElseThrow(() -> new ObjectNotFoundException("Usuário não encotrado"));
+		associateRoles(entity, fil);
+		entity = repository.save(entity);
+		return new UserDTO(entity);		
+	}
+	
+	protected void associateRoles(User entity, UserDTO dto) {
+	    entity.getRoles().clear(); 
+	    for (RoleDTO roleDto : dto.getRoles()) {
+	        Role role = roleRepository.findById(roleDto.getId())
+	                .orElseThrow(() -> new ObjectNotFoundException("Cargo não encontrado"));
+	        entity.getRoles().add(role); 
+	    }
 	}
 	
 	@PreAuthorize("hasAnyRole('ADMIN','OPERATOR')")

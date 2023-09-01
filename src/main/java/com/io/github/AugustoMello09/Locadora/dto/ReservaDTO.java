@@ -3,6 +3,9 @@ package com.io.github.AugustoMello09.Locadora.dto;
 import java.io.Serializable;
 import java.time.LocalDate;
 
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
+
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.io.github.AugustoMello09.Locadora.entities.enums.StatusReserva;
 import com.io.github.AugustoMello09.Locadora.entity.Reserva;
@@ -20,6 +23,8 @@ public class ReservaDTO implements Serializable {
 	
 	private Long id;
 	
+	@NotNull(message = "campo obrigatório")
+	@Min(value = 1, message = "O mínimo para reserva é 1")
 	private int qtdReservada;
 	
 	private StatusReserva statusReserva;

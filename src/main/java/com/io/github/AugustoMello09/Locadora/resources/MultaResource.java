@@ -1,5 +1,7 @@
 package com.io.github.AugustoMello09.Locadora.resources;
 
+import java.util.List;
+
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,7 +31,13 @@ public class MultaResource {
 		MultaDTO mult = service.findById(id);
 		return ResponseEntity.ok().body(mult);
 	}
-
+	
+	@GetMapping
+	public ResponseEntity<List<MultaDTO>> findAll(){
+		List<MultaDTO> listDTo = service.findAll();
+		return ResponseEntity.ok().body(listDTo);
+	}
+	
 	@PostMapping("/PagamentoComBoleto")
 	public ResponseEntity<Void> pagarMultaComBoleto(@RequestBody PagamentoComBoletoDTO pagamentoDTO) {
 		service.pagarMultaBoleto(pagamentoDTO);

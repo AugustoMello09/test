@@ -15,12 +15,24 @@ import lombok.Setter;
 @NoArgsConstructor
 public class FilmePagedDTO implements Serializable {
 	private static final long serialVersionUID = 1L;
-	
+
 	private Long id;
-	private String name;
-	
+	private String nome;
+	private String descricao;
+	private String diretor;
+	private Double valor;
+	private int quantidadeDisponivel;
+	private int quantidadeReservadas;
+	private int quantidadeReservadasOnline;
+
 	public FilmePagedDTO(Filme entity) {
 		id = entity.getId();
-		name = entity.getNome();
+		nome = entity.getNome();
+		descricao = entity.getDescricao();
+		diretor = entity.getDiretor();
+		valor = entity.getValorAluguel();
+		quantidadeDisponivel = entity.getEstoque().getQuantidadeFilmesDisponiveis();
+		quantidadeReservadas = entity.getEstoque().getQuantidadeFilmesReservados();
+		quantidadeReservadasOnline = entity.getEstoque().getQuantidadeFilmesReservadosOnline();
 	}
 }

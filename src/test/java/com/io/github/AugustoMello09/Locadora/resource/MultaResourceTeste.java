@@ -19,6 +19,7 @@ import com.io.github.AugustoMello09.Locadora.dto.MultaDTO;
 import com.io.github.AugustoMello09.Locadora.dto.PagamentoComBoletoDTO;
 import com.io.github.AugustoMello09.Locadora.dto.PagamentoComCartaoDTO;
 import com.io.github.AugustoMello09.Locadora.dto.PagamentoComPixDTO;
+import com.io.github.AugustoMello09.Locadora.entities.enums.EstadoPagamento;
 import com.io.github.AugustoMello09.Locadora.repositories.MultaRepository;
 import com.io.github.AugustoMello09.Locadora.resources.MultaResource;
 import com.io.github.AugustoMello09.Locadora.service.MultaService;
@@ -89,7 +90,7 @@ public class MultaResourceTeste {
 	}
 
 	private void startMulta() {
-		multaDTO = new MultaDTO(ID, MULTA);
+		multaDTO = new MultaDTO(ID, MULTA, EstadoPagamento.QUITADO);
 	}
 
 }

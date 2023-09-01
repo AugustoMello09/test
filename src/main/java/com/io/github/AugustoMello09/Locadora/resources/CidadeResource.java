@@ -31,6 +31,12 @@ public class CidadeResource {
 		return ResponseEntity.ok().body(dto);
 	}
 	
+	@GetMapping(value = "/local/{name}")
+	public ResponseEntity<CidadeDTO> findByNome(@PathVariable String name){
+		CidadeDTO dto = service.findByNome(name);
+		return ResponseEntity.ok().body(dto);
+	}
+	
 	@PostMapping
 	public ResponseEntity<CidadeDTO> create(@Valid @RequestBody CidadeDTO cidDto){
 		CidadeDTO newDto = service.create(cidDto);

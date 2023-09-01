@@ -17,7 +17,7 @@ import lombok.Setter;
 public class FilmeDTOUpdate implements Serializable {
 	private static final long serialVersionUID = 1L;
 	
-	@Size(min = 3, max = 10, message = "Deve ter entre 3 a 10 caracteres")
+	@Size(max = 30, message = "Deve ter no máximo até 30 caracteres")
 	@NotBlank(message = "Campo obrigatório")
 	private String nome;
 	
@@ -25,7 +25,7 @@ public class FilmeDTOUpdate implements Serializable {
 	@NotBlank(message = "Campo obrigatório")
 	private String descricao;
 	
-	@Size(min = 3, max = 10, message = "Deve ter entre 3 a 10 caracteres")
+	@Size(max = 24, message = "Deve ter no máximo até 24 caracteres")
 	@NotBlank(message = "Campo obrigatório")
 	private String diretor;
 

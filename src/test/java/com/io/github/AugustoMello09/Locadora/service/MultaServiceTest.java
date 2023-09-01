@@ -24,6 +24,7 @@ import com.io.github.AugustoMello09.Locadora.dto.MultaDTO;
 import com.io.github.AugustoMello09.Locadora.dto.PagamentoComBoletoDTO;
 import com.io.github.AugustoMello09.Locadora.dto.PagamentoComCartaoDTO;
 import com.io.github.AugustoMello09.Locadora.dto.PagamentoComPixDTO;
+import com.io.github.AugustoMello09.Locadora.entities.enums.EstadoPagamento;
 import com.io.github.AugustoMello09.Locadora.entity.Multa;
 import com.io.github.AugustoMello09.Locadora.repositories.MultaRepository;
 import com.io.github.AugustoMello09.Locadora.repositories.PagamentoRepository;
@@ -152,7 +153,7 @@ public class MultaServiceTest {
 	    }
 
 	private void startMulta() {
-		multa = new Multa(ID, PRESO, null);
+		multa = new Multa(ID, PRESO, null, EstadoPagamento.CANCELADO);
 		optionalMulta = Optional.of(multa);
 	}
 

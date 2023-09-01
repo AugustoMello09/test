@@ -1,6 +1,7 @@
 package com.io.github.AugustoMello09.Locadora.resources;
 
 import java.net.URI;
+import java.util.List;
 
 import javax.validation.Valid;
 
@@ -29,6 +30,12 @@ public class RoleResource {
 	public ResponseEntity<RoleDTO> findById(@PathVariable Long id){
 		RoleDTO dto = service.findById(id);
 		return ResponseEntity.ok().body(dto);
+	}
+	
+	@GetMapping
+	public ResponseEntity<List<RoleDTO>> findAll(){
+		List<RoleDTO> listDto = service.findAll();
+		return ResponseEntity.ok().body(listDto);
 	}
 	
 	@PostMapping

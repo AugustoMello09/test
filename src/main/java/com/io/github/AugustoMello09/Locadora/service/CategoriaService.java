@@ -1,6 +1,8 @@
 package com.io.github.AugustoMello09.Locadora.service;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -28,6 +30,14 @@ public class CategoriaService {
 		Optional<Categoria> obj = repository.findById(id);
 		Categoria entity = obj.orElseThrow(()-> new ObjectNotFoundException("Categoria Não encontrada"));
 		return new CategoriaDTO(entity);
+	}
+	
+	@Transactional
+	@PreAuthorize("hasAnyRole('ADMIN')")
+	public List<CategoriaDTO> findAll() {
+		List<Categoria> list = repository.findAll();
+		List<CategoriaDTO> listDto = list.stream().map(x -> new CategoriaDTO(x)).collect(Collectors.toList());
+		return listDto;
 	}
 	
 	@Transactional
@@ -65,5 +75,7 @@ public class CategoriaService {
 			throw new DataIntegratyViolationException("Categoria não pode ser excluida porque está associado com filmes");
 		}	
 	}
+
+	
 
 }

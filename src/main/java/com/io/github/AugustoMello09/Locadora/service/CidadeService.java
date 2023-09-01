@@ -58,6 +58,16 @@ public class CidadeService {
 			throw new DataIntegratyViolationException("Não pode deletar cidades associadas a estado");
 		}
 	}
+	
+	@Transactional
+	@PreAuthorize("hasAnyRole('ADMIN','OPERATOR')")
+	public CidadeDTO findByNome(String name) {
+	  Cidade cid = repository.findByName(name);
+	  if (cid == null) {
+	        throw new ObjectNotFoundException("Cidade não encontrada");
+	  }
+	  return new CidadeDTO(cid);
+	}
 
 	
 }

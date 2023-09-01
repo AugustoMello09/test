@@ -7,7 +7,7 @@ import lombok.Getter;
 @AllArgsConstructor
 public enum EstadoPagamento {
 
-	PENDENTE(0, "Pendente"), QUITADO(1, "Quitado"), CANCELADO(2, "Cancelado");
+	PENDENTE(0, "Pendente"), QUITADO(1, "Pago"), CANCELADO(2, "Cancelado");
 
 	private Integer cod;
 	private String descricao;

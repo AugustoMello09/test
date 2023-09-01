@@ -1,6 +1,8 @@
 package com.io.github.AugustoMello09.Locadora.service;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -31,6 +33,14 @@ public class EstoqueService {
 		Optional<Estoque> obj = repository.findById(id);
 		Estoque entity = obj.orElseThrow(() -> new ObjectNotFoundException("Estoque Não encontrado"));
 		return new EstoqueDTO(entity);
+	}
+	
+	@Transactional
+	@PreAuthorize("hasAnyRole('ADMIN')")
+	public List<EstoqueDTO> findAll() {
+		List<Estoque> list = repository.findAll();
+		List<EstoqueDTO> listDto = list.stream().map(x -> new EstoqueDTO(x)).collect(Collectors.toList());
+		return listDto;
 	}
 
 	@Transactional
@@ -70,5 +80,7 @@ public class EstoqueService {
 	        throw new DataIntegrityViolationException("Não é possível excluir o estoque porque está associado a filmes.");
 	    }
 	}
+
+	
 
 }

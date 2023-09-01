@@ -7,5 +7,6 @@ import com.io.github.AugustoMello09.Locadora.entity.Cidade;
 
 @Repository
 public interface CidadeRepository extends JpaRepository<Cidade, Long> {
-
+	
+	Cidade findByName(String name);
 }

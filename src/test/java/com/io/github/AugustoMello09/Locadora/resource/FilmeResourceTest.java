@@ -23,8 +23,8 @@ import org.springframework.http.ResponseEntity;
 import com.io.github.AugustoMello09.Locadora.dto.CategoriaDTO;
 import com.io.github.AugustoMello09.Locadora.dto.EstoqueDTO;
 import com.io.github.AugustoMello09.Locadora.dto.FilmeDTO;
+import com.io.github.AugustoMello09.Locadora.dto.FilmeDTOByCategory;
 import com.io.github.AugustoMello09.Locadora.dto.FilmeDTOUpdate;
-import com.io.github.AugustoMello09.Locadora.dto.FilmePagedDTO;
 import com.io.github.AugustoMello09.Locadora.entities.enums.StatusEstoque;
 import com.io.github.AugustoMello09.Locadora.entity.Categoria;
 import com.io.github.AugustoMello09.Locadora.entity.Estoque;
@@ -105,7 +105,7 @@ public class FilmeResourceTest {
 		List<Filme> filmes = Arrays.asList(new Filme(1L, "Nome 1", "Descrição 1", "Nome 1", 12.00, categoria, estoque),
 				new Filme(2L, "Nome 2", "Descrição 2", "Nome 2", 13.00, categoria, estoque));
 		when(service.findAll(idCategoria)).thenReturn(filmes);
-		ResponseEntity<List<FilmePagedDTO>> response = resource.findAll(idCategoria);
+		ResponseEntity<List<FilmeDTOByCategory>> response = resource.findAll(idCategoria);
 		assertNotNull(response);
 		assertNotNull(response.getBody());
 		assertEquals(HttpStatus.OK, response.getStatusCode());

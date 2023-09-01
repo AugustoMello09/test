@@ -25,13 +25,13 @@ public class ResourceServerConfig extends ResourceServerConfigurerAdapter {
 
 	@Autowired
 	private TokenStore tokenStore;
-	
+
 	@Autowired
 	private Environment env;
 
 	private static final String[] PUBLIC = { "/oauth/token", "/h2-console/**" };
 
-	private static final String[] PUBLIC_POST = { "/users", "/enderecos", "/estados", "/cidades"};
+	private static final String[] PUBLIC_POST = { "/users", "/enderecos", "/estados", "/cidades" };
 
 	@Override
 	public void configure(ResourceServerSecurityConfigurer resources) throws Exception {
@@ -40,16 +40,16 @@ public class ResourceServerConfig extends ResourceServerConfigurerAdapter {
 
 	@Override
 	public void configure(HttpSecurity http) throws Exception {
-		if(Arrays.asList(env.getActiveProfiles()).contains("test")) {
+		if (Arrays.asList(env.getActiveProfiles()).contains("test")) {
 			http.headers().frameOptions().disable();
 		}
-		http.authorizeRequests()
-		.antMatchers(PUBLIC).permitAll()
-		.antMatchers(HttpMethod.POST, PUBLIC_POST).permitAll()
+		http
+		.authorizeRequests().antMatchers(PUBLIC).permitAll()
+		.antMatchers(HttpMethod.POST, PUBLIC_POST).permitAll()		
 		.anyRequest().authenticated();
 		http.cors().configurationSource(corsConfigurationSource());
 	}
-	
+
 	@Bean
 	public CorsConfigurationSource corsConfigurationSource() {
 		CorsConfiguration corsConfig = new CorsConfiguration();
@@ -65,8 +65,8 @@ public class ResourceServerConfig extends ResourceServerConfigurerAdapter {
 
 	@Bean
 	public FilterRegistrationBean<CorsFilter> corsFilter() {
-		FilterRegistrationBean<CorsFilter> bean 
-			= new FilterRegistrationBean<>(new CorsFilter(corsConfigurationSource()));
+		FilterRegistrationBean<CorsFilter> bean = new FilterRegistrationBean<>(
+				new CorsFilter(corsConfigurationSource()));
 		bean.setOrder(Ordered.HIGHEST_PRECEDENCE);
 		return bean;
 	}

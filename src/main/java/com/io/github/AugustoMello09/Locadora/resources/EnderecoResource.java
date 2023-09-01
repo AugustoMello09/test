@@ -2,6 +2,8 @@ package com.io.github.AugustoMello09.Locadora.resources;
 
 import java.net.URI;
 
+import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -29,7 +31,7 @@ public class EnderecoResource {
 	}
 	
 	@PostMapping
-	public ResponseEntity<EnderecoDTO> create(@RequestBody EnderecoDTO objDto){
+	public ResponseEntity<EnderecoDTO> create(@Valid @RequestBody EnderecoDTO objDto){
 		EnderecoDTO newObj = service.create(objDto);
 		URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(newObj.getId()).toUri();
 		return ResponseEntity.created(uri).body(newObj);

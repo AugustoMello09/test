@@ -1,7 +1,9 @@
 package com.io.github.AugustoMello09.Locadora.service;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.validation.Valid;
 
@@ -13,6 +15,8 @@ import org.springframework.transaction.annotation.Transactional;
 import com.io.github.AugustoMello09.Locadora.Services.exception.DataIntegratyViolationException;
 import com.io.github.AugustoMello09.Locadora.Services.exception.ObjectNotFoundException;
 import com.io.github.AugustoMello09.Locadora.dto.LocacaoDTO;
+import com.io.github.AugustoMello09.Locadora.dto.LocacaoDTOPList;
+import com.io.github.AugustoMello09.Locadora.entities.enums.EstadoPagamento;
 import com.io.github.AugustoMello09.Locadora.entity.Estoque;
 import com.io.github.AugustoMello09.Locadora.entity.Filme;
 import com.io.github.AugustoMello09.Locadora.entity.Locacao;
@@ -44,6 +48,14 @@ public class LocacaoService {
 		Optional<Locacao> locacao = repository.findById(id);
 		Locacao entity = locacao.orElseThrow(() -> new ObjectNotFoundException("Locacao não encontrada"));
 		return new LocacaoDTO(entity);
+	}
+	
+	@Transactional
+	@PreAuthorize("hasAnyRole('ADMIN')")
+	public List<LocacaoDTOPList> findAll() {
+		List<Locacao> list = repository.findAll();
+		List<LocacaoDTOPList> listDto = list.stream().map(x -> new LocacaoDTOPList(x)).collect(Collectors.toList());
+		return listDto;
 	}
 
 	@Transactional
@@ -89,6 +101,7 @@ public class LocacaoService {
 			Double multaValor = 100.0;
 			Multa multa = new Multa();
 			multa.setValor(multaValor);
+			multa.setformaPamento(EstadoPagamento.PENDENTE);
 			multa.setLocacao(entity);
 			entity.getMultas().add(multa);
 		}

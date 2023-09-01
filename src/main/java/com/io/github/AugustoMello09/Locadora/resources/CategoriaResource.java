@@ -1,6 +1,7 @@
 package com.io.github.AugustoMello09.Locadora.resources;
 
 import java.net.URI;
+import java.util.List;
 
 import javax.validation.Valid;
 
@@ -35,9 +36,15 @@ public class CategoriaResource {
 	}
 	
 	@GetMapping
-	public ResponseEntity<Page<CategoriaDTO>> findAll(Pageable pageable){
+	public ResponseEntity<Page<CategoriaDTO>> findAllPaged(Pageable pageable){
 		Page<CategoriaDTO> cat = service.findAllPaged(pageable);
 		return ResponseEntity.ok().body(cat);
+	}
+	
+	@GetMapping(value = "/lista")
+	public ResponseEntity<List<CategoriaDTO>> findAll(){
+		List<CategoriaDTO> listDto = service.findAll();
+		return ResponseEntity.ok().body(listDto);
 	}
 	
 	@PostMapping

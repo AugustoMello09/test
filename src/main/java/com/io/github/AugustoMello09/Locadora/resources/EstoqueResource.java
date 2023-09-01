@@ -1,6 +1,7 @@
 package com.io.github.AugustoMello09.Locadora.resources;
 
 import java.net.URI;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -28,6 +29,12 @@ public class EstoqueResource {
 	public ResponseEntity<EstoqueDTO> findById(@PathVariable Long id){
 		EstoqueDTO est = service.findEstoqueById(id);
 		return ResponseEntity.ok().body(est);
+	}
+	
+	@GetMapping
+	public ResponseEntity<List<EstoqueDTO>> findAll(){
+		List<EstoqueDTO> listDto = service.findAll();
+		return ResponseEntity.ok().body(listDto);
 	}
 	
 	@PostMapping

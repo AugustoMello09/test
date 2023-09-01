@@ -22,7 +22,6 @@ public class EstadoService {
 	private EstadoRepository repository;
 
 	@Transactional
-	@PreAuthorize("hasAnyRole('ADMIN','OPERATOR')")
 	public EstadoDTO findById(Long id) {
 		Optional<Estado> est = repository.findById(id);
 		Estado entity = est.orElseThrow(()-> new ObjectNotFoundException("Estado Não encontrada"));

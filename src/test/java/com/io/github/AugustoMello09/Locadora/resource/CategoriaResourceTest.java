@@ -72,7 +72,7 @@ public class CategoriaResourceTest {
 		Pageable pageable = Pageable.unpaged();
 		Page<CategoriaDTO> categoriaPage = new PageImpl<>(categoriaDTOList, pageable, categoriaDTOList.size());
 		when(service.findAllPaged(pageable)).thenReturn(categoriaPage);
-		ResponseEntity<Page<CategoriaDTO>> response = resource.findAll(pageable);
+		ResponseEntity<Page<CategoriaDTO>> response = resource.findAllPaged(pageable);
 		assertNotNull(response);
 		assertNotNull(response.getBody());
 		assertEquals(HttpStatus.OK, response.getStatusCode());

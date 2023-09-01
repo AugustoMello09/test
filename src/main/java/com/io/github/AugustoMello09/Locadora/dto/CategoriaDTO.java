@@ -2,7 +2,6 @@ package com.io.github.AugustoMello09.Locadora.dto;
 
 import java.io.Serializable;
 
-import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 
 import com.io.github.AugustoMello09.Locadora.entity.Categoria;
@@ -19,8 +18,7 @@ public class CategoriaDTO implements Serializable {
 	
 	private Long id;
 	
-	@Size(min = 2, max = 10, message = "Deve ter entre 2 a 10 caracteres")
-	@NotBlank(message = "Campo obrigatório")
+	@Size(max = 20, message = "Deve ter no máximo a 20 caracteres")
 	private String nomeCategoria;
 	
 	public CategoriaDTO() {}

@@ -1,7 +1,9 @@
 package com.io.github.AugustoMello09.Locadora.service;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -13,6 +15,7 @@ import com.io.github.AugustoMello09.Locadora.dto.MultaDTO;
 import com.io.github.AugustoMello09.Locadora.dto.PagamentoComBoletoDTO;
 import com.io.github.AugustoMello09.Locadora.dto.PagamentoComCartaoDTO;
 import com.io.github.AugustoMello09.Locadora.dto.PagamentoComPixDTO;
+import com.io.github.AugustoMello09.Locadora.entities.enums.EstadoPagamento;
 import com.io.github.AugustoMello09.Locadora.entities.enums.FormaPagamento;
 import com.io.github.AugustoMello09.Locadora.entity.Multa;
 import com.io.github.AugustoMello09.Locadora.entity.PagamentoComBoleto;
@@ -37,6 +40,14 @@ public class MultaService {
 		Multa entity = obj.orElseThrow(() -> new ObjectNotFoundException("Multa não encontrada"));
 		return new MultaDTO(entity);
 	}
+	
+	@Transactional
+	@PreAuthorize("hasAnyRole('ADMIN')")
+	public List<MultaDTO> findAll() {
+		List<Multa> list = repository.findAll();
+		List<MultaDTO> listDto = list.stream().map(x -> new MultaDTO(x)).collect(Collectors.toList());
+		return listDto;
+	}
 
 	@Transactional
 	@PreAuthorize("hasAnyRole('ADMIN','OPERATOR')")
@@ -44,15 +55,17 @@ public class MultaService {
 		MultaDTO multaDTO = pagamentoDTO.getMulta();
 		Long multaId = multaDTO.getId();
 		if (multaId != null) {
-			Optional<Multa> multa = repository.findById(multaId);
-			if (multa.isPresent() && multa.get().getValor() > 0) {
+			Multa multa = repository.findById(multaId).orElseThrow(
+					() -> new ObjectNotFoundException("Multa não encontrada"));
+			if (multa != null && multa.getValor() > 0) {
 				PagamentoComCartao pagamento = new PagamentoComCartao();
 				pagamento.setNumeroParcelas(pagamentoDTO.getNumeroParcelas());
 				pagamento.setformaPagamento(FormaPagamento.CARTAO);
 				pagamento.setValor(pagamentoDTO.getValor());
-				pagamento.setValor(multa.get().getValor());
-				pagamento.setMulta(multa.get());
+				pagamento.setMulta(multa);
 				pagamentoRepository.save(pagamento);
+		        multa.setformaPamento(EstadoPagamento.QUITADO);
+		        repository.save(multa);
 			} else {
 				throw new ObjectNotFoundException("Multa não encontrada");
 			}
@@ -65,15 +78,17 @@ public class MultaService {
 		MultaDTO multaDTO = pagamentoDTO.getMulta();
 		Long multaId = multaDTO.getId();
 		if (multaId != null) {
-			Optional<Multa> multa = repository.findById(multaId);
-			if (multa.isPresent() && multa.get().getValor() > 0) {
+			Multa multa = repository.findById(multaId).orElseThrow(
+					() -> new ObjectNotFoundException("Multa não encontrada"));
+			if (multa != null && multa.getValor() > 0) {
 				PagamentoComPix pagamento = new PagamentoComPix();
 				pagamento.setDataPagamento(LocalDateTime.now());
 				pagamento.setformaPagamento(FormaPagamento.PIX);
 				pagamento.setValor(pagamentoDTO.getValor());
-				pagamento.setValor(multa.get().getValor());
-				pagamento.setMulta(multa.get());
+				pagamento.setMulta(multa);
 				pagamentoRepository.save(pagamento);
+		        multa.setformaPamento(EstadoPagamento.QUITADO);
+		        repository.save(multa);
 			} else {
 				throw new ObjectNotFoundException("Multa não encontrada");
 			}
@@ -87,17 +102,19 @@ public class MultaService {
 		MultaDTO multaDTO = pagamentoDTO.getMulta();
 		Long multaId = multaDTO.getId();
 		if (multaId != null) {
-			Optional<Multa> multa = repository.findById(multaId);
-			if (multa.isPresent() && multa.get().getValor() > 0) {
+			Multa multa = repository.findById(multaId).orElseThrow(
+					() -> new ObjectNotFoundException("Multa não encontrada"));
+			if (multa != null && multa.getValor() > 0) {
 				PagamentoComBoleto pagamento = new PagamentoComBoleto();
 				pagamento.setDataVencimento(LocalDateTime.now().plusDays(30));
 				pagamento.setDataGerada(LocalDateTime.now());
 				pagamento.setDataPagamento(LocalDateTime.now());
 				pagamento.setformaPagamento(FormaPagamento.BOLETO);
 				pagamento.setValor(pagamentoDTO.getValor());
-				pagamento.setValor(multa.get().getValor());
-				pagamento.setMulta(multa.get());
+				pagamento.setMulta(multa);
 				pagamentoRepository.save(pagamento);
+		        multa.setformaPamento(EstadoPagamento.QUITADO);
+		        repository.save(multa);
 			} else {
 				throw new ObjectNotFoundException("Multa não encontrada");
 			}

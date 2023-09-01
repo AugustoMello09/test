@@ -1,6 +1,7 @@
 package com.io.github.AugustoMello09.Locadora.resources;
 
 import java.net.URI;
+import java.util.List;
 
 import javax.validation.Valid;
 
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import com.io.github.AugustoMello09.Locadora.dto.LocacaoDTO;
+import com.io.github.AugustoMello09.Locadora.dto.LocacaoDTOPList;
 import com.io.github.AugustoMello09.Locadora.service.LocacaoService;
 
 @RestController
@@ -29,6 +31,13 @@ public class LocacaoResource {
 		LocacaoDTO locacao = service.findById(id);
 		return ResponseEntity.ok().body(locacao);
 	}
+	
+	@GetMapping
+	public ResponseEntity<List<LocacaoDTOPList>> findAll(){
+		List<LocacaoDTOPList> list = service.findAll();
+		return ResponseEntity.ok().body(list);
+	}
+	
 	
 	@PostMapping
 	public ResponseEntity<LocacaoDTO> create(@Valid @RequestBody LocacaoDTO obj){

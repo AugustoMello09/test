@@ -2,15 +2,20 @@ package com.io.github.AugustoMello09.Locadora.service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.io.github.AugustoMello09.Locadora.Services.exception.ObjectNotFoundException;
 import com.io.github.AugustoMello09.Locadora.dto.FilmeDTO;
+import com.io.github.AugustoMello09.Locadora.dto.FilmeDTOInfo;
 import com.io.github.AugustoMello09.Locadora.dto.FilmeDTOUpdate;
+import com.io.github.AugustoMello09.Locadora.dto.FilmePagedDTO;
 import com.io.github.AugustoMello09.Locadora.entity.Categoria;
 import com.io.github.AugustoMello09.Locadora.entity.Estoque;
 import com.io.github.AugustoMello09.Locadora.entity.Filme;
@@ -47,7 +52,25 @@ public class FilmeService {
 		categoriaService.findById(idCategoria);
 		return repository.findAllByCategory(idCategoria);
 	}
+	
+	@Transactional(readOnly = true)
+	@PreAuthorize("hasAnyRole('ADMIN','OPERATOR')")
+	public Page<FilmePagedDTO> findPaged(Pageable pageable) {
+		Page<Filme> list = repository.findAll(pageable);
+		return list.map(x -> new FilmePagedDTO(x));
+	}
+	
+	
 
+	@PreAuthorize("hasAnyRole('ADMIN')")
+	public List<FilmeDTOInfo> findAllDrop() {
+		List<Filme> list = repository.findAll();
+		List<FilmeDTOInfo> listDto = list.stream().
+				map(x -> new FilmeDTOInfo(x)).collect(Collectors.toList());
+		return listDto;
+	}
+
+	
 	@Transactional
 	@PreAuthorize("hasAnyRole('ADMIN')")
 	public FilmeDTO update(FilmeDTOUpdate fil, Long id) {
@@ -83,5 +106,9 @@ public class FilmeService {
 		repository.save(entity);
 		return new FilmeDTO(entity);	
 	}
+
+	
+
+	
 
 }
